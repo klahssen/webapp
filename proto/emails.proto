@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package domain;
+option go_package = "github.com/klahssen/webapp/domain";
+
+enum EmailType {
+    NEW_ACCOUNT=0;
+    NEW_PASSWORD=1;
+}
+
+//EmailParams holds payload to send an email
+message EmailParams {
+    string em=1;
+    string lang=2;
+	EmailType type=3;
+}
+
+message EmailResp {
+    string uid=1;
+}
+
+service Emails {
+	rpc SendAccountConfirmation(EmailParams) returns (EmailResp);
+}

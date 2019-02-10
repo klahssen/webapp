@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package domain;
+option go_package = "github.com/klahssen/webapp/domain";
+
+//import "google/protobuf/descriptor.proto";
+
+enum AccountType {
+	USER=0;
+	ADMIN=1;
+	DEV=2;
+}
+
+enum AccountStatus {
+	CREATED=0; //when user signs up
+	ACTIVE=1; //when account is validated
+	LOCKED=2; //access (temporarly) disabled
+	INACTIVE=3; //user wants to close account -> can only access the website via a specific reactivation endpoint
+	DELETED=4; //user cant login and data for this user is not used/displayed anywhere (should remove all)
+}
+
+//AccountEntity entity (timestamps in seconds)
+message AccountEntity {
+	// `datastore:"-"`
+	string uid=1;
+	string userid=2;
+	string em=3;
+	// `json:"-"`
+	string pw=4 [json_name="-"];
+	int64 c_at=5;
+	int64 u_at=6;
+	AccountType type=7;
+	AccountStatus status=8;
+}
+
+message AccountID {
+	string uid=1;
+}
+
+message AccountEmail {
+	string em=1;
+}
+
+//AccountParams holds payload to create/update an Account
+message AccountParams {
+	string uid=1 ;
+	string em=2 ;
+	string pw=3 ;
+}
+//AccountResp holds response for Account creation or update
+message AccountResp {
+	string uid=1 ;
+	bool ok=2 ;
+}
+
+//AccountJwtTokens holds authentication tokens
+message AccountJwtTokens {
+	string access=1 ;
+	string refresh=2 ;
+}
+
+//AccountCredentials holds credentials to authenticate a user
+message AccountCredentials {
+	string em=1 ;
+	string pw=2 ;
+}
+
+
+service Accounts {
+	rpc Create(AccountParams) returns (AccountResp);
+	rpc ChangeEmail(AccountParams) returns (AccountResp);
+	rpc ChangePassword(AccountParams) returns (AccountResp);
+	rpc Authenticate(AccountCredentials) returns (AccountJwtTokens);
+}
+
+service AccountsRepo {
+	rpc PutNew(AccountEntity) returns (AccountID);
+	rpc Put(AccountEntity) returns (AccountID);
+	rpc GetByID(AccountID) returns (AccountEntity);
+	rpc GetByUserID(AccountUserID) returns (AccountEntity);
+	rpc GetByEmail(AccountEmail) returns (AccountEntity);
+}
