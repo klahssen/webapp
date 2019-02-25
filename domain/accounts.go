@@ -80,8 +80,8 @@ func (a *AccountEntity) ValidateNew() error {
 	if err = validatePassword(a.Pw); err != nil {
 		return err
 	}
-	a.CAt = time.Now().Unix()
-	a.UAt = time.Now().Unix()
+	a.CreaAt = time.Now().UTC().Unix()
+	a.UpdAt = time.Now().UTC().Unix()
 	return nil
 }
 

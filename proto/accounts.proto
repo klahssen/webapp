@@ -3,14 +3,17 @@ syntax = "proto3";
 package domain;
 option go_package = "github.com/klahssen/webapp/domain";
 
+//import "google/protobuf/timestamp.proto";
 //import "google/protobuf/descriptor.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
+//AccountType is an authorization criteria
 enum AccountType {
 	USER=0;
 	ADMIN=1;
 	DEV=2;
 }
-
+//AccountStatus is an authorization criteria
 enum AccountStatus {
 	CREATED=0; //when user signs up
 	ACTIVE=1; //when account is validated
@@ -19,18 +22,16 @@ enum AccountStatus {
 	DELETED=4; //user cant login and data for this user is not used/displayed anywhere (should remove all)
 }
 
-//AccountEntity entity (timestamps in seconds)
+//AccountEntity (timestamps in seconds)
 message AccountEntity {
 	// `datastore:"-"`
-	string uid=1;
-	string userid=2;
-	string em=3;
-	// `json:"-"`
-	string pw=4 [json_name="-"];
-	int64 c_at=5;
-	int64 u_at=6;
-	AccountType type=7;
-	AccountStatus status=8;
+	string uid=1 [json_name="uid", (gogoproto.jsontag)="uid", (gogoproto.moretags) = "db:\"uid\""];
+	string em=3 [json_name="em", (gogoproto.jsontag)="em", (gogoproto.moretags) = "db:\"em\""];
+	string pw=4 [json_name="-", (gogoproto.jsontag)="-", (gogoproto.moretags) = "db:\"pw\""];
+	int64 crea_at=5 [json_name="crea_at", (gogoproto.jsontag)="crea_at",  (gogoproto.moretags) = "db:\"crea_at\""];
+	int64 upd_at=6 [json_name="upd_at", (gogoproto.jsontag)="upd_at",  (gogoproto.moretags) = "db:\"upd_at\""];
+	AccountType type=7 [json_name="type", (gogoproto.jsontag)="type",  (gogoproto.moretags) = "db:\"type\""];
+	AccountStatus status=8 [json_name="status", (gogoproto.jsontag)="status",  (gogoproto.moretags) = "db:\"status\""];
 }
 
 message AccountID {
@@ -61,7 +62,7 @@ message AccountJwtTokens {
 
 //AccountCredentials holds credentials to authenticate a user
 message AccountCredentials {
-	string em=1 ;
+	string id=1 ;
 	string pw=2 ;
 }
 
@@ -77,6 +78,5 @@ service AccountsRepo {
 	rpc PutNew(AccountEntity) returns (AccountID);
 	rpc Put(AccountEntity) returns (AccountID);
 	rpc GetByID(AccountID) returns (AccountEntity);
-	rpc GetByUserID(AccountUserID) returns (AccountEntity);
 	rpc GetByEmail(AccountEmail) returns (AccountEntity);
 }
