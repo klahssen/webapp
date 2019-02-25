@@ -3,6 +3,8 @@ syntax = "proto3";
 package domain;
 option go_package = "github.com/klahssen/webapp/domain";
 
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
 enum EmailType {
     NEW_ACCOUNT=0;
     NEW_PASSWORD=1;
@@ -10,9 +12,9 @@ enum EmailType {
 
 //EmailParams holds payload to send an email
 message EmailParams {
-    string em=1;
-    string lang=2;
-	EmailType type=3;
+    string em=1 [json_name="em", (gogoproto.jsontag)="em", (gogoproto.moretags) = "db:\"em\""];
+    string lang=2 [json_name="lang", (gogoproto.jsontag)="lang", (gogoproto.moretags) = "db:\"lang\""];
+	EmailType type=3 [json_name="type", (gogoproto.jsontag)="type", (gogoproto.moretags) = "db:\"type\""];
 }
 
 message EmailResp {
