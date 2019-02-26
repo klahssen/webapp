@@ -91,13 +91,13 @@ func (AccountStatus) EnumDescriptor() ([]byte, []int) {
 //AccountEntity (timestamps in seconds)
 type AccountEntity struct {
 	// `datastore:"-"`
-	Uid    string        `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid" db:"uid"`
-	Em     string        `protobuf:"bytes,3,opt,name=em,proto3" json:"em" db:"em"`
-	Pw     string        `protobuf:"bytes,4,opt,name=pw,json=-,proto3" json:"-" db:"pw"`
-	CreaAt int64         `protobuf:"varint,5,opt,name=crea_at,proto3" json:"crea_at" db:"crea_at"`
-	UpdAt  int64         `protobuf:"varint,6,opt,name=upd_at,proto3" json:"upd_at" db:"upd_at"`
-	Type   AccountType   `protobuf:"varint,7,opt,name=type,proto3,enum=domain.AccountType" json:"type" db:"type"`
-	Status AccountStatus `protobuf:"varint,8,opt,name=status,proto3,enum=domain.AccountStatus" json:"status" db:"status"`
+	Uid       string        `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid" db:"uid"`
+	Em        string        `protobuf:"bytes,3,opt,name=em,proto3" json:"em" db:"em"`
+	Pw        string        `protobuf:"bytes,4,opt,name=pw,json=-,proto3" json:"-" db:"pw"`
+	CreatedAt int64         `protobuf:"varint,5,opt,name=created_at,json=crea_at,proto3" json:"crea_at" db:"crea_at"`
+	UpdatedAt int64         `protobuf:"varint,6,opt,name=updated_at,json=upd_at,proto3" json:"upd_at" db:"upd_at"`
+	Type      AccountType   `protobuf:"varint,7,opt,name=type,proto3,enum=domain.AccountType" json:"type" db:"type"`
+	Status    AccountStatus `protobuf:"varint,8,opt,name=status,proto3,enum=domain.AccountStatus" json:"status" db:"status"`
 }
 
 func (m *AccountEntity) Reset()         { *m = AccountEntity{} }
@@ -154,16 +154,16 @@ func (m *AccountEntity) GetPw() string {
 	return ""
 }
 
-func (m *AccountEntity) GetCreaAt() int64 {
+func (m *AccountEntity) GetCreatedAt() int64 {
 	if m != nil {
-		return m.CreaAt
+		return m.CreatedAt
 	}
 	return 0
 }
 
-func (m *AccountEntity) GetUpdAt() int64 {
+func (m *AccountEntity) GetUpdatedAt() int64 {
 	if m != nil {
-		return m.UpdAt
+		return m.UpdatedAt
 	}
 	return 0
 }
@@ -183,7 +183,7 @@ func (m *AccountEntity) GetStatus() AccountStatus {
 }
 
 type AccountID struct {
-	Uid string `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (m *AccountID) Reset()         { *m = AccountID{} }
@@ -219,53 +219,9 @@ func (m *AccountID) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AccountID proto.InternalMessageInfo
 
-func (m *AccountID) GetUid() string {
+func (m *AccountID) GetId() string {
 	if m != nil {
-		return m.Uid
-	}
-	return ""
-}
-
-type AccountEmail struct {
-	Em string `protobuf:"bytes,1,opt,name=em,proto3" json:"em,omitempty"`
-}
-
-func (m *AccountEmail) Reset()         { *m = AccountEmail{} }
-func (m *AccountEmail) String() string { return proto.CompactTextString(m) }
-func (*AccountEmail) ProtoMessage()    {}
-func (*AccountEmail) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{2}
-}
-func (m *AccountEmail) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *AccountEmail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountEmail.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *AccountEmail) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountEmail.Merge(m, src)
-}
-func (m *AccountEmail) XXX_Size() int {
-	return m.Size()
-}
-func (m *AccountEmail) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountEmail.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountEmail proto.InternalMessageInfo
-
-func (m *AccountEmail) GetEm() string {
-	if m != nil {
-		return m.Em
+		return m.Id
 	}
 	return ""
 }
@@ -281,7 +237,7 @@ func (m *AccountParams) Reset()         { *m = AccountParams{} }
 func (m *AccountParams) String() string { return proto.CompactTextString(m) }
 func (*AccountParams) ProtoMessage()    {}
 func (*AccountParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{3}
+	return fileDescriptor_e1e7723af4c007b7, []int{2}
 }
 func (m *AccountParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -334,14 +290,13 @@ func (m *AccountParams) GetPw() string {
 //AccountResp holds response for Account creation or update
 type AccountResp struct {
 	Uid string `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
-	Ok  bool   `protobuf:"varint,2,opt,name=ok,proto3" json:"ok,omitempty"`
 }
 
 func (m *AccountResp) Reset()         { *m = AccountResp{} }
 func (m *AccountResp) String() string { return proto.CompactTextString(m) }
 func (*AccountResp) ProtoMessage()    {}
 func (*AccountResp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{4}
+	return fileDescriptor_e1e7723af4c007b7, []int{3}
 }
 func (m *AccountResp) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -377,13 +332,6 @@ func (m *AccountResp) GetUid() string {
 	return ""
 }
 
-func (m *AccountResp) GetOk() bool {
-	if m != nil {
-		return m.Ok
-	}
-	return false
-}
-
 //AccountJwtTokens holds authentication tokens
 type AccountJwtTokens struct {
 	Access  string `protobuf:"bytes,1,opt,name=access,proto3" json:"access,omitempty"`
@@ -394,7 +342,7 @@ func (m *AccountJwtTokens) Reset()         { *m = AccountJwtTokens{} }
 func (m *AccountJwtTokens) String() string { return proto.CompactTextString(m) }
 func (*AccountJwtTokens) ProtoMessage()    {}
 func (*AccountJwtTokens) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{5}
+	return fileDescriptor_e1e7723af4c007b7, []int{4}
 }
 func (m *AccountJwtTokens) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -447,7 +395,7 @@ func (m *AccountCredentials) Reset()         { *m = AccountCredentials{} }
 func (m *AccountCredentials) String() string { return proto.CompactTextString(m) }
 func (*AccountCredentials) ProtoMessage()    {}
 func (*AccountCredentials) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{6}
+	return fileDescriptor_e1e7723af4c007b7, []int{5}
 }
 func (m *AccountCredentials) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -490,68 +438,128 @@ func (m *AccountCredentials) GetPw() string {
 	return ""
 }
 
+//AccountParams holds payload to create/update an Account
+type AccountPrivileges struct {
+	Uid    string `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Type   string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Status string `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+}
+
+func (m *AccountPrivileges) Reset()         { *m = AccountPrivileges{} }
+func (m *AccountPrivileges) String() string { return proto.CompactTextString(m) }
+func (*AccountPrivileges) ProtoMessage()    {}
+func (*AccountPrivileges) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e1e7723af4c007b7, []int{6}
+}
+func (m *AccountPrivileges) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountPrivileges) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountPrivileges.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountPrivileges) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPrivileges.Merge(m, src)
+}
+func (m *AccountPrivileges) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountPrivileges) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountPrivileges.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountPrivileges proto.InternalMessageInfo
+
+func (m *AccountPrivileges) GetUid() string {
+	if m != nil {
+		return m.Uid
+	}
+	return ""
+}
+
+func (m *AccountPrivileges) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *AccountPrivileges) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterEnum("domain.AccountType", AccountType_name, AccountType_value)
 	proto.RegisterEnum("domain.AccountStatus", AccountStatus_name, AccountStatus_value)
 	proto.RegisterType((*AccountEntity)(nil), "domain.AccountEntity")
 	proto.RegisterType((*AccountID)(nil), "domain.AccountID")
-	proto.RegisterType((*AccountEmail)(nil), "domain.AccountEmail")
 	proto.RegisterType((*AccountParams)(nil), "domain.AccountParams")
 	proto.RegisterType((*AccountResp)(nil), "domain.AccountResp")
 	proto.RegisterType((*AccountJwtTokens)(nil), "domain.AccountJwtTokens")
 	proto.RegisterType((*AccountCredentials)(nil), "domain.AccountCredentials")
+	proto.RegisterType((*AccountPrivileges)(nil), "domain.AccountPrivileges")
 }
 
 func init() { proto.RegisterFile("accounts.proto", fileDescriptor_e1e7723af4c007b7) }
 
 var fileDescriptor_e1e7723af4c007b7 = []byte{
-	// 729 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x41, 0x6f, 0xe2, 0x46,
-	0x14, 0xc6, 0x86, 0x18, 0x78, 0x50, 0xe4, 0x4c, 0x9a, 0xca, 0xa5, 0x2a, 0x4e, 0x2c, 0x55, 0x8a,
-	0x52, 0x05, 0x54, 0x92, 0x1e, 0xd2, 0x56, 0x95, 0x00, 0x5b, 0x2d, 0xbb, 0xd9, 0x04, 0x39, 0x6c,
-	0x0e, 0x7b, 0x59, 0x19, 0x98, 0x00, 0x22, 0xc6, 0x96, 0x67, 0x2c, 0x8b, 0x7f, 0xb1, 0x3f, 0x6b,
-	0x8f, 0x39, 0xee, 0xc9, 0x5a, 0x85, 0x1b, 0x87, 0x3d, 0xf0, 0x07, 0x76, 0x35, 0x33, 0x36, 0x8a,
-	0x48, 0xf6, 0x90, 0xdb, 0x7c, 0xef, 0x7d, 0xdf, 0x37, 0xcf, 0xef, 0xb3, 0x06, 0x2a, 0xce, 0x70,
-	0xe8, 0x85, 0x73, 0x4a, 0xea, 0x7e, 0xe0, 0x51, 0x0f, 0x29, 0x23, 0xcf, 0x75, 0xa6, 0xf3, 0xea,
-	0xc9, 0x78, 0x4a, 0x27, 0xe1, 0xa0, 0x3e, 0xf4, 0xdc, 0xc6, 0xd8, 0x1b, 0x7b, 0x0d, 0xde, 0x1e,
-	0x84, 0xb7, 0x1c, 0x71, 0xc0, 0x4f, 0x42, 0x66, 0x7c, 0x91, 0xe1, 0x87, 0x96, 0x70, 0xb2, 0xe6,
-	0x74, 0x4a, 0x17, 0xe8, 0x37, 0xc8, 0x86, 0xd3, 0x91, 0x26, 0x1d, 0x48, 0x47, 0xc5, 0xf6, 0xde,
-	0x2a, 0xd6, 0x19, 0x5c, 0xc7, 0x7a, 0x61, 0x34, 0xf8, 0xcb, 0x08, 0xa7, 0x23, 0xc3, 0x66, 0x05,
-	0x74, 0x08, 0x32, 0x76, 0xb5, 0x2c, 0x67, 0xed, 0xae, 0x62, 0x5d, 0xc6, 0xee, 0x3a, 0xd6, 0xf3,
-	0x8c, 0x84, 0x5d, 0xc3, 0x96, 0xb1, 0x8b, 0x74, 0x90, 0xfd, 0x48, 0xcb, 0x71, 0x8a, 0xba, 0x8a,
-	0x75, 0xe9, 0x24, 0x65, 0xf8, 0x91, 0x61, 0x4b, 0x27, 0xe8, 0x4f, 0xc8, 0x0f, 0x03, 0xec, 0xbc,
-	0x77, 0xa8, 0xb6, 0x73, 0x20, 0x1d, 0x65, 0xdb, 0xbf, 0xac, 0x62, 0x3d, 0x2d, 0xad, 0x63, 0xbd,
-	0xcc, 0xb8, 0x09, 0x34, 0xec, 0xb4, 0x81, 0xfe, 0x00, 0x25, 0xf4, 0x47, 0x4c, 0xa5, 0x70, 0xd5,
-	0xcf, 0xab, 0x58, 0x4f, 0x2a, 0xeb, 0x58, 0x2f, 0xf1, 0x39, 0x39, 0x32, 0xec, 0xa4, 0x8c, 0xfe,
-	0x85, 0x1c, 0x5d, 0xf8, 0x58, 0xcb, 0x1f, 0x48, 0x47, 0x95, 0xe6, 0x5e, 0x5d, 0x2c, 0xab, 0x9e,
-	0x7c, 0x79, 0x7f, 0xe1, 0xe3, 0xf6, 0xfe, 0x2a, 0xd6, 0x39, 0x69, 0x1d, 0xeb, 0x45, 0xe6, 0xc1,
-	0xce, 0x86, 0xcd, 0x4b, 0xe8, 0x7f, 0x50, 0x08, 0x75, 0x68, 0x48, 0xb4, 0x02, 0x77, 0xd8, 0xdf,
-	0x72, 0xb8, 0xe6, 0x4d, 0x31, 0x89, 0x20, 0xa6, 0x93, 0x08, 0x64, 0xd8, 0x49, 0xd9, 0xf8, 0x15,
-	0x8a, 0x89, 0xa6, 0x6b, 0x22, 0xf5, 0xd1, 0xae, 0xf9, 0x5a, 0x8d, 0x1a, 0x94, 0xd3, 0x38, 0x5c,
-	0x67, 0x7a, 0x87, 0x2a, 0x7c, 0xcd, 0x82, 0x20, 0x63, 0xd7, 0x68, 0x6d, 0xe2, 0xea, 0x39, 0x81,
-	0xe3, 0x92, 0xa7, 0x16, 0x89, 0x44, 0x4e, 0x25, 0x0c, 0xfb, 0x91, 0x48, 0xca, 0x96, 0xfd, 0xc8,
-	0x68, 0x40, 0x29, 0xb1, 0xb0, 0x31, 0xf1, 0x9f, 0x37, 0xf0, 0x66, 0xdc, 0xa0, 0x60, 0xcb, 0xde,
-	0xcc, 0x30, 0x41, 0x4d, 0x04, 0xaf, 0x22, 0xda, 0xf7, 0x66, 0x78, 0x4e, 0xd0, 0x4f, 0xa0, 0x38,
-	0xc3, 0x21, 0x26, 0x24, 0x11, 0x26, 0x08, 0x69, 0x90, 0x0f, 0xf0, 0x6d, 0x80, 0xc9, 0x24, 0x99,
-	0x20, 0x85, 0xc6, 0x19, 0xa0, 0xc4, 0xa5, 0x13, 0xe0, 0x11, 0x9e, 0xd3, 0xa9, 0x73, 0x47, 0xd8,
-	0x5d, 0x9b, 0xcb, 0x65, 0x71, 0xb7, 0x1f, 0xa5, 0xc3, 0xfb, 0xd1, 0xf1, 0xef, 0x9b, 0x61, 0x59,
-	0x48, 0xa8, 0x00, 0xb9, 0xb7, 0xd7, 0x96, 0xad, 0x66, 0x50, 0x11, 0x76, 0x5a, 0xe6, 0x9b, 0xee,
-	0xa5, 0x2a, 0xa1, 0x3c, 0x64, 0x4d, 0xeb, 0x46, 0x95, 0x8f, 0xaf, 0x36, 0xcb, 0x11, 0x79, 0xa0,
-	0x12, 0xe4, 0x3b, 0xb6, 0xd5, 0xea, 0x5b, 0xa6, 0x9a, 0x41, 0x00, 0x4a, 0xab, 0xd3, 0xef, 0xde,
-	0x58, 0xaa, 0xc4, 0xce, 0x17, 0x57, 0x9d, 0xd7, 0x96, 0xa9, 0xca, 0xa8, 0x0c, 0x85, 0xee, 0x65,
-	0xd2, 0xc9, 0x32, 0x89, 0x69, 0x5d, 0x58, 0x4c, 0x92, 0x6b, 0x7e, 0x95, 0xa0, 0x90, 0x38, 0x12,
-	0x74, 0x06, 0x4a, 0x27, 0xc0, 0x0e, 0xc5, 0x68, 0x3b, 0x7d, 0x11, 0x45, 0x75, 0xfb, 0xb7, 0xe2,
-	0xeb, 0x3d, 0x87, 0x52, 0x67, 0xe2, 0xcc, 0xc7, 0x58, 0xe4, 0xf9, 0x12, 0xe9, 0x3f, 0x50, 0x11,
-	0xd2, 0x9e, 0x43, 0x48, 0xe4, 0x05, 0xa3, 0x17, 0xa9, 0x4d, 0x28, 0xb7, 0x42, 0x3a, 0x61, 0x8b,
-	0x1e, 0xb2, 0xa1, 0xab, 0x5b, 0xa4, 0x47, 0x29, 0x54, 0xb5, 0xad, 0xde, 0x26, 0xe7, 0xe6, 0x52,
-	0xda, 0xfc, 0x90, 0xc4, 0xc6, 0xbe, 0x87, 0x9a, 0xa0, 0xf4, 0x42, 0x7a, 0x89, 0xa3, 0x27, 0xc3,
-	0x88, 0xf7, 0xa3, 0xba, 0xbb, 0x55, 0xee, 0x9a, 0xa8, 0x01, 0xd9, 0x5e, 0x48, 0x5f, 0x20, 0x38,
-	0x85, 0xfc, 0x7f, 0x98, 0xb6, 0x17, 0x5d, 0x13, 0x3d, 0xed, 0x56, 0x9f, 0xf7, 0x41, 0xe7, 0x00,
-	0x5c, 0x24, 0x16, 0xfd, 0xe3, 0x36, 0x89, 0x55, 0xbf, 0x23, 0x6d, 0xff, 0xfd, 0xf1, 0xa1, 0x26,
-	0xdd, 0x3f, 0xd4, 0xa4, 0xcf, 0x0f, 0x35, 0xe9, 0xc3, 0xb2, 0x96, 0xb9, 0x5f, 0xd6, 0x32, 0x9f,
-	0x96, 0xb5, 0xcc, 0xbb, 0xc3, 0x47, 0xcf, 0xe9, 0xec, 0xce, 0x99, 0x10, 0x82, 0xe7, 0x8d, 0x08,
-	0x0f, 0x1c, 0xdf, 0x6f, 0x08, 0xab, 0x81, 0xc2, 0x5f, 0xd2, 0xd3, 0x6f, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0x62, 0x76, 0x1f, 0xc1, 0x92, 0x05, 0x00, 0x00,
+	// 705 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xcf, 0x4f, 0xdb, 0x48,
+	0x14, 0x8e, 0x9d, 0xe0, 0x24, 0x2f, 0x6c, 0x64, 0x06, 0x81, 0x4c, 0x90, 0x62, 0xb0, 0xb4, 0x12,
+	0x62, 0x45, 0x22, 0xb1, 0xac, 0xb4, 0xbf, 0xb4, 0x52, 0x12, 0x5b, 0xdb, 0xb4, 0x14, 0xa8, 0x09,
+	0x1c, 0x7a, 0x41, 0x4e, 0x3c, 0x24, 0x16, 0x71, 0x6c, 0x79, 0xc6, 0x8d, 0xf8, 0x2f, 0xfa, 0x67,
+	0xf5, 0xc8, 0xb1, 0x27, 0xab, 0x82, 0x5b, 0x8e, 0x91, 0xaa, 0x5e, 0x2b, 0xcf, 0x4c, 0x02, 0x72,
+	0xe9, 0x81, 0xdb, 0x7c, 0xef, 0x7d, 0xdf, 0xe7, 0x99, 0xf7, 0x3d, 0x19, 0xaa, 0xce, 0x60, 0x10,
+	0xc4, 0x13, 0x4a, 0x1a, 0x61, 0x14, 0xd0, 0x00, 0x29, 0x6e, 0xe0, 0x3b, 0xde, 0xa4, 0x76, 0x30,
+	0xf4, 0xe8, 0x28, 0xee, 0x37, 0x06, 0x81, 0xdf, 0x1c, 0x06, 0xc3, 0xa0, 0xc9, 0xda, 0xfd, 0xf8,
+	0x9a, 0x21, 0x06, 0xd8, 0x89, 0xcb, 0x8c, 0xaf, 0x32, 0xfc, 0xd2, 0xe2, 0x4e, 0xd6, 0x84, 0x7a,
+	0xf4, 0x16, 0xfd, 0x0a, 0xf9, 0xd8, 0x73, 0x35, 0x69, 0x47, 0xda, 0x2b, 0xb7, 0xd7, 0x67, 0x89,
+	0x9e, 0xc2, 0x79, 0xa2, 0x97, 0xdc, 0xfe, 0xdf, 0x46, 0xec, 0xb9, 0x86, 0x9d, 0x16, 0xd0, 0x2e,
+	0xc8, 0xd8, 0xd7, 0xf2, 0x8c, 0xb5, 0x36, 0x4b, 0x74, 0x19, 0xfb, 0xf3, 0x44, 0x2f, 0xa6, 0x24,
+	0xec, 0x1b, 0xb6, 0x8c, 0x7d, 0xa4, 0x83, 0x1c, 0x4e, 0xb5, 0x02, 0xa3, 0xa8, 0xb3, 0x44, 0x97,
+	0x0e, 0x16, 0x8c, 0x70, 0x6a, 0xd8, 0xd2, 0x01, 0xfa, 0x13, 0x60, 0x10, 0x61, 0x87, 0x62, 0xf7,
+	0xca, 0xa1, 0xda, 0xca, 0x8e, 0xb4, 0x97, 0x6f, 0x6f, 0xcf, 0x12, 0xbd, 0x98, 0x56, 0xaf, 0x1c,
+	0x3a, 0x4f, 0xf4, 0xd5, 0x94, 0x2e, 0xa0, 0x61, 0x2f, 0x1a, 0xe8, 0x0f, 0x80, 0x38, 0x74, 0x17,
+	0x4a, 0x85, 0x29, 0xb7, 0x66, 0x89, 0xae, 0xc4, 0xa1, 0xcb, 0x85, 0x15, 0x76, 0x5d, 0x86, 0x0c,
+	0x5b, 0x94, 0xd1, 0x7f, 0x50, 0xa0, 0xb7, 0x21, 0xd6, 0x8a, 0x3b, 0xd2, 0x5e, 0xf5, 0x70, 0xbd,
+	0xc1, 0x67, 0xd6, 0x10, 0x03, 0xe8, 0xdd, 0x86, 0xb8, 0xbd, 0x31, 0x4b, 0x74, 0x46, 0x9a, 0x27,
+	0x7a, 0x39, 0xf5, 0x48, 0xcf, 0x86, 0xcd, 0x4a, 0xe8, 0x15, 0x28, 0x84, 0x3a, 0x34, 0x26, 0x5a,
+	0x89, 0x39, 0x6c, 0x64, 0x1c, 0xce, 0x59, 0x93, 0xdf, 0x84, 0x13, 0x17, 0x37, 0xe1, 0xc8, 0xb0,
+	0x45, 0xd9, 0xd8, 0x86, 0xb2, 0xd0, 0x74, 0x4d, 0x54, 0x05, 0x79, 0x31, 0x71, 0x5b, 0xf6, 0x5c,
+	0xa3, 0xb5, 0xcc, 0xe4, 0xcc, 0x89, 0x1c, 0x9f, 0x20, 0xf5, 0x49, 0x26, 0x7c, 0xfc, 0x55, 0x36,
+	0x7e, 0x99, 0x4b, 0xb0, 0x9f, 0xe2, 0x70, 0xca, 0xe3, 0xb0, 0xe5, 0x70, 0x6a, 0xe8, 0x50, 0x11,
+	0x16, 0x36, 0x26, 0xe1, 0x8f, 0x06, 0x86, 0x09, 0xaa, 0x20, 0xbc, 0x9e, 0xd2, 0x5e, 0x70, 0x83,
+	0x27, 0x04, 0x6d, 0x82, 0xe2, 0x0c, 0x06, 0x98, 0x10, 0x41, 0x14, 0x08, 0x69, 0x50, 0x8c, 0xf0,
+	0x75, 0x84, 0xc9, 0x48, 0x7c, 0x71, 0x01, 0x8d, 0x23, 0x40, 0xc2, 0xa5, 0x13, 0x61, 0x17, 0x4f,
+	0xa8, 0xe7, 0x8c, 0x49, 0xf6, 0x3d, 0xe2, 0x72, 0xf2, 0xf2, 0x72, 0xef, 0x60, 0x6d, 0xf1, 0xbe,
+	0xc8, 0xfb, 0xe0, 0x8d, 0xf1, 0x10, 0x3f, 0xf7, 0x46, 0x24, 0xd2, 0xe2, 0x42, 0x9e, 0xc0, 0xe6,
+	0x32, 0x01, 0xfe, 0x56, 0x81, 0xf6, 0x7f, 0x5b, 0xbe, 0x37, 0x4d, 0x11, 0x95, 0xa0, 0x70, 0x71,
+	0x6e, 0xd9, 0x6a, 0x0e, 0x95, 0x61, 0xa5, 0x65, 0xbe, 0xed, 0x9e, 0xa8, 0x12, 0x2a, 0x42, 0xde,
+	0xb4, 0x2e, 0x55, 0x79, 0xff, 0x74, 0x39, 0x5f, 0x1e, 0x18, 0xaa, 0x40, 0xb1, 0x63, 0x5b, 0xad,
+	0x9e, 0x65, 0xaa, 0x39, 0x04, 0xa0, 0xb4, 0x3a, 0xbd, 0xee, 0xa5, 0xa5, 0x4a, 0xe9, 0xf9, 0xf8,
+	0xb4, 0xf3, 0xc6, 0x32, 0x55, 0x19, 0xad, 0x42, 0xa9, 0x7b, 0x22, 0x3a, 0xf9, 0x54, 0x62, 0x5a,
+	0xc7, 0x56, 0x2a, 0x29, 0x1c, 0x7e, 0x93, 0xa1, 0x24, 0x1c, 0x09, 0x3a, 0x02, 0xa5, 0xc3, 0xb6,
+	0x1a, 0x65, 0xd7, 0x83, 0xa7, 0x59, 0xcb, 0xee, 0x1d, 0x4b, 0xe8, 0x2f, 0xa8, 0x5c, 0xb0, 0x8d,
+	0xb6, 0x7c, 0xc7, 0x1b, 0xbf, 0x48, 0xfa, 0x2f, 0x54, 0xb9, 0xf4, 0xcc, 0x21, 0x64, 0x1a, 0x44,
+	0xee, 0x8b, 0xd4, 0x6d, 0x50, 0x85, 0xfa, 0x31, 0x8b, 0xad, 0xac, 0x7e, 0xd9, 0x7a, 0xde, 0xe3,
+	0x10, 0xf2, 0xff, 0x63, 0x8a, 0xd6, 0x32, 0xbd, 0xae, 0x59, 0xd3, 0x32, 0xa5, 0xc7, 0x65, 0x33,
+	0x61, 0xb5, 0x15, 0xd3, 0x51, 0xba, 0x33, 0x83, 0x74, 0x58, 0xb5, 0x0c, 0xf3, 0xc9, 0x42, 0xfd,
+	0xdc, 0xa5, 0xfd, 0xcf, 0xa7, 0xfb, 0xba, 0x74, 0x77, 0x5f, 0x97, 0xbe, 0xdc, 0xd7, 0xa5, 0x8f,
+	0x0f, 0xf5, 0xdc, 0xdd, 0x43, 0x3d, 0xf7, 0xf9, 0xa1, 0x9e, 0x7b, 0xbf, 0xfb, 0xe4, 0x47, 0x78,
+	0x33, 0x76, 0x46, 0x84, 0xe0, 0x49, 0x73, 0x8a, 0xfb, 0x4e, 0x18, 0x36, 0xb9, 0x5b, 0x5f, 0x61,
+	0xff, 0xc0, 0xdf, 0xbf, 0x07, 0x00, 0x00, 0xff, 0xff, 0x4e, 0x78, 0xb6, 0x6b, 0x4c, 0x05, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -567,8 +575,11 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AccountsClient interface {
 	Create(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error)
-	ChangeEmail(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error)
-	ChangePassword(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error)
+	UpdateEmail(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error)
+	UpdatePassword(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error)
+	UpdatePrivileges(ctx context.Context, in *AccountPrivileges, opts ...grpc.CallOption) (*AccountResp, error)
+	//rpc List() returns (AccountJwtTokens);
+	Get(ctx context.Context, in *AccountID, opts ...grpc.CallOption) (*AccountJwtTokens, error)
 	Authenticate(ctx context.Context, in *AccountCredentials, opts ...grpc.CallOption) (*AccountJwtTokens, error)
 }
 
@@ -589,18 +600,36 @@ func (c *accountsClient) Create(ctx context.Context, in *AccountParams, opts ...
 	return out, nil
 }
 
-func (c *accountsClient) ChangeEmail(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error) {
+func (c *accountsClient) UpdateEmail(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error) {
 	out := new(AccountResp)
-	err := c.cc.Invoke(ctx, "/domain.Accounts/ChangeEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/domain.Accounts/UpdateEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *accountsClient) ChangePassword(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error) {
+func (c *accountsClient) UpdatePassword(ctx context.Context, in *AccountParams, opts ...grpc.CallOption) (*AccountResp, error) {
 	out := new(AccountResp)
-	err := c.cc.Invoke(ctx, "/domain.Accounts/ChangePassword", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/domain.Accounts/UpdatePassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountsClient) UpdatePrivileges(ctx context.Context, in *AccountPrivileges, opts ...grpc.CallOption) (*AccountResp, error) {
+	out := new(AccountResp)
+	err := c.cc.Invoke(ctx, "/domain.Accounts/UpdatePrivileges", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountsClient) Get(ctx context.Context, in *AccountID, opts ...grpc.CallOption) (*AccountJwtTokens, error) {
+	out := new(AccountJwtTokens)
+	err := c.cc.Invoke(ctx, "/domain.Accounts/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -619,8 +648,11 @@ func (c *accountsClient) Authenticate(ctx context.Context, in *AccountCredential
 // AccountsServer is the server API for Accounts service.
 type AccountsServer interface {
 	Create(context.Context, *AccountParams) (*AccountResp, error)
-	ChangeEmail(context.Context, *AccountParams) (*AccountResp, error)
-	ChangePassword(context.Context, *AccountParams) (*AccountResp, error)
+	UpdateEmail(context.Context, *AccountParams) (*AccountResp, error)
+	UpdatePassword(context.Context, *AccountParams) (*AccountResp, error)
+	UpdatePrivileges(context.Context, *AccountPrivileges) (*AccountResp, error)
+	//rpc List() returns (AccountJwtTokens);
+	Get(context.Context, *AccountID) (*AccountJwtTokens, error)
 	Authenticate(context.Context, *AccountCredentials) (*AccountJwtTokens, error)
 }
 
@@ -646,38 +678,74 @@ func _Accounts_Create_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Accounts_ChangeEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Accounts_UpdateEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountsServer).ChangeEmail(ctx, in)
+		return srv.(AccountsServer).UpdateEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/domain.Accounts/ChangeEmail",
+		FullMethod: "/domain.Accounts/UpdateEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsServer).ChangeEmail(ctx, req.(*AccountParams))
+		return srv.(AccountsServer).UpdateEmail(ctx, req.(*AccountParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Accounts_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Accounts_UpdatePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountsServer).ChangePassword(ctx, in)
+		return srv.(AccountsServer).UpdatePassword(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/domain.Accounts/ChangePassword",
+		FullMethod: "/domain.Accounts/UpdatePassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsServer).ChangePassword(ctx, req.(*AccountParams))
+		return srv.(AccountsServer).UpdatePassword(ctx, req.(*AccountParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Accounts_UpdatePrivileges_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountPrivileges)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountsServer).UpdatePrivileges(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/domain.Accounts/UpdatePrivileges",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountsServer).UpdatePrivileges(ctx, req.(*AccountPrivileges))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Accounts_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountsServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/domain.Accounts/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountsServer).Get(ctx, req.(*AccountID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -709,179 +777,24 @@ var _Accounts_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Accounts_Create_Handler,
 		},
 		{
-			MethodName: "ChangeEmail",
-			Handler:    _Accounts_ChangeEmail_Handler,
+			MethodName: "UpdateEmail",
+			Handler:    _Accounts_UpdateEmail_Handler,
 		},
 		{
-			MethodName: "ChangePassword",
-			Handler:    _Accounts_ChangePassword_Handler,
+			MethodName: "UpdatePassword",
+			Handler:    _Accounts_UpdatePassword_Handler,
+		},
+		{
+			MethodName: "UpdatePrivileges",
+			Handler:    _Accounts_UpdatePrivileges_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _Accounts_Get_Handler,
 		},
 		{
 			MethodName: "Authenticate",
 			Handler:    _Accounts_Authenticate_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "accounts.proto",
-}
-
-// AccountsRepoClient is the client API for AccountsRepo service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type AccountsRepoClient interface {
-	PutNew(ctx context.Context, in *AccountEntity, opts ...grpc.CallOption) (*AccountID, error)
-	Put(ctx context.Context, in *AccountEntity, opts ...grpc.CallOption) (*AccountID, error)
-	GetByID(ctx context.Context, in *AccountID, opts ...grpc.CallOption) (*AccountEntity, error)
-	GetByEmail(ctx context.Context, in *AccountEmail, opts ...grpc.CallOption) (*AccountEntity, error)
-}
-
-type accountsRepoClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewAccountsRepoClient(cc *grpc.ClientConn) AccountsRepoClient {
-	return &accountsRepoClient{cc}
-}
-
-func (c *accountsRepoClient) PutNew(ctx context.Context, in *AccountEntity, opts ...grpc.CallOption) (*AccountID, error) {
-	out := new(AccountID)
-	err := c.cc.Invoke(ctx, "/domain.AccountsRepo/PutNew", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountsRepoClient) Put(ctx context.Context, in *AccountEntity, opts ...grpc.CallOption) (*AccountID, error) {
-	out := new(AccountID)
-	err := c.cc.Invoke(ctx, "/domain.AccountsRepo/Put", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountsRepoClient) GetByID(ctx context.Context, in *AccountID, opts ...grpc.CallOption) (*AccountEntity, error) {
-	out := new(AccountEntity)
-	err := c.cc.Invoke(ctx, "/domain.AccountsRepo/GetByID", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountsRepoClient) GetByEmail(ctx context.Context, in *AccountEmail, opts ...grpc.CallOption) (*AccountEntity, error) {
-	out := new(AccountEntity)
-	err := c.cc.Invoke(ctx, "/domain.AccountsRepo/GetByEmail", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// AccountsRepoServer is the server API for AccountsRepo service.
-type AccountsRepoServer interface {
-	PutNew(context.Context, *AccountEntity) (*AccountID, error)
-	Put(context.Context, *AccountEntity) (*AccountID, error)
-	GetByID(context.Context, *AccountID) (*AccountEntity, error)
-	GetByEmail(context.Context, *AccountEmail) (*AccountEntity, error)
-}
-
-func RegisterAccountsRepoServer(s *grpc.Server, srv AccountsRepoServer) {
-	s.RegisterService(&_AccountsRepo_serviceDesc, srv)
-}
-
-func _AccountsRepo_PutNew_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountEntity)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountsRepoServer).PutNew(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/domain.AccountsRepo/PutNew",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsRepoServer).PutNew(ctx, req.(*AccountEntity))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AccountsRepo_Put_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountEntity)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountsRepoServer).Put(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/domain.AccountsRepo/Put",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsRepoServer).Put(ctx, req.(*AccountEntity))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AccountsRepo_GetByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountID)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountsRepoServer).GetByID(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/domain.AccountsRepo/GetByID",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsRepoServer).GetByID(ctx, req.(*AccountID))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AccountsRepo_GetByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountEmail)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountsRepoServer).GetByEmail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/domain.AccountsRepo/GetByEmail",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountsRepoServer).GetByEmail(ctx, req.(*AccountEmail))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _AccountsRepo_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "domain.AccountsRepo",
-	HandlerType: (*AccountsRepoServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "PutNew",
-			Handler:    _AccountsRepo_PutNew_Handler,
-		},
-		{
-			MethodName: "Put",
-			Handler:    _AccountsRepo_Put_Handler,
-		},
-		{
-			MethodName: "GetByID",
-			Handler:    _AccountsRepo_GetByID_Handler,
-		},
-		{
-			MethodName: "GetByEmail",
-			Handler:    _AccountsRepo_GetByEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -921,15 +834,15 @@ func (m *AccountEntity) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Pw)))
 		i += copy(dAtA[i:], m.Pw)
 	}
-	if m.CreaAt != 0 {
+	if m.CreatedAt != 0 {
 		dAtA[i] = 0x28
 		i++
-		i = encodeVarintAccounts(dAtA, i, uint64(m.CreaAt))
+		i = encodeVarintAccounts(dAtA, i, uint64(m.CreatedAt))
 	}
-	if m.UpdAt != 0 {
+	if m.UpdatedAt != 0 {
 		dAtA[i] = 0x30
 		i++
-		i = encodeVarintAccounts(dAtA, i, uint64(m.UpdAt))
+		i = encodeVarintAccounts(dAtA, i, uint64(m.UpdatedAt))
 	}
 	if m.Type != 0 {
 		dAtA[i] = 0x38
@@ -959,35 +872,11 @@ func (m *AccountID) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Uid) > 0 {
+	if len(m.Id) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Uid)))
-		i += copy(dAtA[i:], m.Uid)
-	}
-	return i, nil
-}
-
-func (m *AccountEmail) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountEmail) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Em) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Em)))
-		i += copy(dAtA[i:], m.Em)
+		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
 	}
 	return i, nil
 }
@@ -1048,16 +937,6 @@ func (m *AccountResp) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Uid)))
 		i += copy(dAtA[i:], m.Uid)
-	}
-	if m.Ok {
-		dAtA[i] = 0x10
-		i++
-		if m.Ok {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
 	}
 	return i, nil
 }
@@ -1122,6 +1001,42 @@ func (m *AccountCredentials) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *AccountPrivileges) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountPrivileges) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Uid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Uid)))
+		i += copy(dAtA[i:], m.Uid)
+	}
+	if len(m.Type) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Type)))
+		i += copy(dAtA[i:], m.Type)
+	}
+	if len(m.Status) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintAccounts(dAtA, i, uint64(len(m.Status)))
+		i += copy(dAtA[i:], m.Status)
+	}
+	return i, nil
+}
+
 func encodeVarintAccounts(dAtA []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
@@ -1149,11 +1064,11 @@ func (m *AccountEntity) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAccounts(uint64(l))
 	}
-	if m.CreaAt != 0 {
-		n += 1 + sovAccounts(uint64(m.CreaAt))
+	if m.CreatedAt != 0 {
+		n += 1 + sovAccounts(uint64(m.CreatedAt))
 	}
-	if m.UpdAt != 0 {
-		n += 1 + sovAccounts(uint64(m.UpdAt))
+	if m.UpdatedAt != 0 {
+		n += 1 + sovAccounts(uint64(m.UpdatedAt))
 	}
 	if m.Type != 0 {
 		n += 1 + sovAccounts(uint64(m.Type))
@@ -1170,20 +1085,7 @@ func (m *AccountID) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Uid)
-	if l > 0 {
-		n += 1 + l + sovAccounts(uint64(l))
-	}
-	return n
-}
-
-func (m *AccountEmail) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Em)
+	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovAccounts(uint64(l))
 	}
@@ -1221,9 +1123,6 @@ func (m *AccountResp) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAccounts(uint64(l))
 	}
-	if m.Ok {
-		n += 2
-	}
 	return n
 }
 
@@ -1255,6 +1154,27 @@ func (m *AccountCredentials) Size() (n int) {
 		n += 1 + l + sovAccounts(uint64(l))
 	}
 	l = len(m.Pw)
+	if l > 0 {
+		n += 1 + l + sovAccounts(uint64(l))
+	}
+	return n
+}
+
+func (m *AccountPrivileges) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Uid)
+	if l > 0 {
+		n += 1 + l + sovAccounts(uint64(l))
+	}
+	l = len(m.Type)
+	if l > 0 {
+		n += 1 + l + sovAccounts(uint64(l))
+	}
+	l = len(m.Status)
 	if l > 0 {
 		n += 1 + l + sovAccounts(uint64(l))
 	}
@@ -1401,9 +1321,9 @@ func (m *AccountEntity) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreaAt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
 			}
-			m.CreaAt = 0
+			m.CreatedAt = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowAccounts
@@ -1413,16 +1333,16 @@ func (m *AccountEntity) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.CreaAt |= int64(b&0x7F) << shift
+				m.CreatedAt |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 6:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdAt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
 			}
-			m.UpdAt = 0
+			m.UpdatedAt = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowAccounts
@@ -1432,7 +1352,7 @@ func (m *AccountEntity) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.UpdAt |= int64(b&0x7F) << shift
+				m.UpdatedAt |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1530,7 +1450,7 @@ func (m *AccountID) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1558,92 +1478,7 @@ func (m *AccountID) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Uid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccounts(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthAccounts
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthAccounts
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountEmail) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccounts
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountEmail: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountEmail: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Em", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounts
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAccounts
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccounts
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Em = string(dAtA[iNdEx:postIndex])
+			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1879,26 +1714,6 @@ func (m *AccountResp) Unmarshal(dAtA []byte) error {
 			}
 			m.Uid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ok", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccounts
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ok = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAccounts(dAtA[iNdEx:])
@@ -2132,6 +1947,155 @@ func (m *AccountCredentials) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Pw = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipAccounts(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountPrivileges) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowAccounts
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountPrivileges: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountPrivileges: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAccounts
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Uid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAccounts
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Type = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAccounts
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAccounts
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Status = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

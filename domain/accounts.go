@@ -80,9 +80,14 @@ func (a *AccountEntity) ValidateNew() error {
 	if err = validatePassword(a.Pw); err != nil {
 		return err
 	}
-	a.CreaAt = time.Now().UTC().Unix()
-	a.UpdAt = time.Now().UTC().Unix()
+	a.CreatedAt = time.Now().UTC().Unix()
+	a.RecordUpdate()
 	return nil
+}
+
+//RecordUpdate stores timestamp of the update
+func (a *AccountEntity) RecordUpdate() {
+	a.UpdatedAt = time.Now().UTC().Unix()
 }
 
 func validatePassword(pw string) error {

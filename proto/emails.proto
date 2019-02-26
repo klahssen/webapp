@@ -5,22 +5,27 @@ option go_package = "github.com/klahssen/webapp/domain";
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
+/*
 enum EmailType {
     NEW_ACCOUNT=0;
     NEW_PASSWORD=1;
 }
+*/
 
 //EmailParams holds payload to send an email
 message EmailParams {
     string em=1 [json_name="em", (gogoproto.jsontag)="em", (gogoproto.moretags) = "db:\"em\""];
     string lang=2 [json_name="lang", (gogoproto.jsontag)="lang", (gogoproto.moretags) = "db:\"lang\""];
-	EmailType type=3 [json_name="type", (gogoproto.jsontag)="type", (gogoproto.moretags) = "db:\"type\""];
+	//EmailType type=3 [json_name="type", (gogoproto.jsontag)="type", (gogoproto.moretags) = "db:\"type\""];
 }
 
 message EmailResp {
     string uid=1;
+    string server=2;
 }
 
 service Emails {
-	rpc SendAccountConfirmation(EmailParams) returns (EmailResp);
+    rpc SendAccountConfirm(EmailParams) returns (EmailResp);
+    rpc SendEmailAddrConfirm(EmailParams) returns (EmailResp);
+    rpc SendPasswordReset(EmailParams) returns (EmailResp);
 }
