@@ -28,7 +28,7 @@ func (ep *EmailConfirmationParams) Validate() error {
 		return fmt.Errorf("nil pointer")
 	}
 	var err error
-	if err = validateEmail(ep.Addr); err != nil {
+	if err = ValidateEmail(ep.Addr); err != nil {
 		return err
 	}
 	if !validators.IsValidLang(ep.Lang) {

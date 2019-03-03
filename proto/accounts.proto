@@ -32,6 +32,7 @@ message AccountEntity {
 	int64 updated_at=6 [json_name="upd_at", (gogoproto.jsontag)="upd_at",  (gogoproto.moretags) = "db:\"upd_at\""];
 	AccountType type=7 [json_name="type", (gogoproto.jsontag)="type",  (gogoproto.moretags) = "db:\"type\""];
 	AccountStatus status=8 [json_name="status", (gogoproto.jsontag)="status",  (gogoproto.moretags) = "db:\"status\""];
+	string parent_account=9 [json_name="parent", (gogoproto.jsontag)="parent", (gogoproto.moretags) = "db:\"parent\""];
 }
 
 message AccountID {
@@ -72,8 +73,8 @@ service Accounts {
 	rpc Create(AccountParams) returns (AccountResp);
 	rpc UpdateEmail(AccountParams) returns (AccountResp);
 	rpc UpdatePassword(AccountParams) returns (AccountResp);
-	rpc UpdatePrivileges(AccountPrivileges) returns (AccountResp);
-	//rpc List() returns (AccountJwtTokens);
-	rpc Get(AccountID) returns (AccountJwtTokens);
+	rpc UpdateType(AccountPrivileges) returns (AccountResp);
+	rpc UpdateStatus(AccountPrivileges) returns (AccountResp);
+	rpc Get(AccountID) returns (AccountEntity);
 	rpc Authenticate(AccountCredentials) returns (AccountJwtTokens);
 }

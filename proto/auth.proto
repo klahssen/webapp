@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package domain;
+option go_package = "github.com/klahssen/webapp/domain";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "accounts.proto";
+
+
+enum Action {
+    ACCOUNTS_CREATE=0;
+    ACCOUNTS_UPDATE_EMAIL=1;
+    ACCOUNTS_UPDATE_PW=2;
+    ACCOUNTS_UPDATE_STATUS=3;
+    ACCOUNTS_UPDATE_TYPE=4;
+}
+
+
+//AuthParams holds payload to check authorization
+message AuthParams {
+    Action action=1 [json_name="action", (gogoproto.jsontag)="action", (gogoproto.moretags) = "db:\"action\""];
+    string owner=2 [json_name="owner", (gogoproto.jsontag)="owner", (gogoproto.moretags) = "db:\"owner\""];
+}
+
+message AuthResp {
+    bool authorized=1 [json_name="authorized", (gogoproto.jsontag)="authorized", (gogoproto.moretags) = "db:\"authorized\""];
+}
+
+message AccessToken {
+    string token=1 [json_name="token", (gogoproto.jsontag)="token", (gogoproto.moretags) = "db:\"token\""];
+}
+
+message Permissions {
+    string uid=1 [json_name="uid", (gogoproto.jsontag)="uid", (gogoproto.moretags) = "db:\"uid\""];
+    domain.AccountType account_type=2 [json_name="type", (gogoproto.jsontag)="type", (gogoproto.moretags) = "db:\"type\""];
+    domain.AccountStatus account_status=3 [json_name="status", (gogoproto.jsontag)="status", (gogoproto.moretags) = "db:\"status\""];
+    string permissions=4 [json_name="permissions", (gogoproto.jsontag)="permissions", (gogoproto.moretags) = "db:\"permissions\""];
+}
+
+service Authorization {
+    rpc IsAuthorized(AuthParams) returns (AuthResp);
+    rpc GetPermissions(AccessToken) returns (Permissions);
+}

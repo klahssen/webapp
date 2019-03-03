@@ -74,13 +74,29 @@ func (a *AccountEntity) ValidateNew() error {
 		return fmt.Errorf("empty pointer")
 	}
 	var err error
-	if err = validators.EmailAddress(a.Em); err != nil {
+	if err = ValidateEmail(a.Em); err != nil {
 		return err
 	}
-	if err = validatePassword(a.Pw); err != nil {
+	if err = ValidatePassword(a.Pw); err != nil {
 		return err
 	}
 	a.CreatedAt = time.Now().UTC().Unix()
+	a.RecordUpdate()
+	return nil
+}
+
+//Validate account info
+func (a *AccountEntity) Validate() error {
+	if a == nil {
+		return fmt.Errorf("empty pointer")
+	}
+	var err error
+	if err = validators.EmailAddress(a.Em); err != nil {
+		return err
+	}
+	if err = ValidatePassword(a.Pw); err != nil {
+		return err
+	}
 	a.RecordUpdate()
 	return nil
 }
@@ -90,7 +106,8 @@ func (a *AccountEntity) RecordUpdate() {
 	a.UpdatedAt = time.Now().UTC().Unix()
 }
 
-func validatePassword(pw string) error {
+//ValidatePassword validator
+func ValidatePassword(pw string) error {
 	l := len(pw)
 	if l < minPasswordLength || l > maxPasswordLength {
 		return &ErrAccountInvalidPassword
@@ -98,7 +115,8 @@ func validatePassword(pw string) error {
 	return nil
 }
 
-func validateEmail(email string) error {
+//ValidateEmail validator
+func ValidateEmail(email string) error {
 	if err := validators.EmailAddress(email); err != nil {
 		return &ErrAccountInvalidPassword
 	}
