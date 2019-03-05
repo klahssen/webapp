@@ -26,7 +26,7 @@ var (
 	ErrAccessTokenExpired       = errors.Error{Code: http.StatusBadRequest, Msg: "access token expired"}
 	ErrInternal                 = errors.Error{Code: http.StatusInternalServerError, Msg: "internal server error"}
 	ErrInvalidKeyID             = errors.Error{Code: http.StatusInternalServerError, Msg: "invalid access token key ID"}
-	ErrInvalidPermissions       = errors.Error{Code: http.StatusInternalServerError, Msg: "nil pointer"}
-	ErrInvalidClaims            = errors.Error{Code: http.StatusInternalServerError, Msg: "nil pointer"}
+	ErrInvalidPermissions       = errors.Error{Code: http.StatusInternalServerError, Msg: "invalid permissions, check all fields"}
+	ErrInvalidClaims            = errors.Error{Code: http.StatusInternalServerError, Msg: "invalid claims, check all fields"}
 	ErrFailedToGenerateJwtToken = errors.Error{Code: http.StatusInternalServerError, Msg: "failed to generate jwt token"}
 )

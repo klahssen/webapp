@@ -34,7 +34,7 @@ message Permissions {
     string uid=1 [json_name="uid", (gogoproto.jsontag)="uid", (gogoproto.moretags) = "db:\"uid\""];
     domain.AccountType account_type=2 [json_name="type", (gogoproto.jsontag)="type", (gogoproto.moretags) = "db:\"type\""];
     domain.AccountStatus account_status=3 [json_name="status", (gogoproto.jsontag)="status", (gogoproto.moretags) = "db:\"status\""];
-    string permissions=4 [json_name="permissions", (gogoproto.jsontag)="permissions", (gogoproto.moretags) = "db:\"permissions\""];
+    repeated string permissions=4 [json_name="permissions", (gogoproto.jsontag)="permissions", (gogoproto.moretags) = "db:\"permissions\""];
 }
 
 service Authorization {

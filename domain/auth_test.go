@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -74,7 +75,9 @@ func TestStdKeyFunc(t *testing.T) {
 
 func TestGetToken(t *testing.T) {
 	te := tester.NewT(t)
-	t0 := time.Now().Unix()
+	t0 := time.Unix(0, 0)
+	delay := time.Duration(0)
+	dur := time.Minute * 30
 	tests := []struct {
 		perms  *Permissions
 		claims *jwt.StandardClaims
@@ -99,27 +102,64 @@ func TestGetToken(t *testing.T) {
 			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
 		},
 		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", IssuedAt: t0}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
-		},
-		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", IssuedAt: t0, Id: "id"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
-		},
-		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", IssuedAt: t0, Id: "id", Subject: ""}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
-		},
-		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", IssuedAt: t0, Id: "id", ExpiresAt: t0 + 1000, Subject: ""}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
-		},
-		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", IssuedAt: t0, Id: "id", ExpiresAt: t0 + 1000, NotBefore: t0, Subject: ""}, keyID: "", key: []byte(key1), res: nil, err: &ErrInvalidClaims,
+			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", Subject: "subject", IssuedAt: t0.Unix(), ExpiresAt: t0.Add(dur).Unix(), NotBefore: t0.Add(delay).Unix()}, keyID: "", key: []byte(""),
+			res: &AccessToken{Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJpYXQiOjE1NTE3ODg4ODgsImlzcyI6Imlzc3VlciIsInN1YiI6InN1YmplY3QifSwiUGVybXMiOnsidWlkIjoiIiwidHlwZSI6MCwic3RhdHVzIjowLCJwZXJtaXNzaW9ucyI6bnVsbH19.XnAbJvUfo_jA54rCdaV8UZig0HGMDY7qDr5ytjYG3HI"},
+			err: nil,
 		},
 	}
 	for ind, test := range tests {
-		res, err := test.perms.GetToken(test.claims, test.keyID, test.key)
+		res, err := test.perms.GetToken(test.claims, t0, delay, dur, test.keyID, test.key)
 		te.CheckError(ind, test.err, err)
-		if err != nil {
+		if test.err != nil {
 			continue
 		}
-		te.DeepEqual(ind, "res", test.res, res)
+		te.DeepEqual(ind, "token", test.res, res)
+
+		if (test.res == nil && res != nil) || (test.res != nil && res == nil) {
+			t.Errorf("test [%d]: expected res %v received %v", ind, test.res, res)
+			continue
+		}
+
+		parts := strings.Split(res.Token, ".")
+		eparts := strings.Split(test.res.Token, ".")
+		if len(parts) != 3 {
+			t.Errorf("test [%d]: token has %d parts", ind, len(parts))
+			continue
+		}
+		if len(eparts) != 3 {
+			t.Errorf("test [%d]: expected token has %d parts", ind, len(eparts))
+			continue
+		}
+		if parts[0] != eparts[0] {
+			t.Errorf("test [%d]: expected encoded head '%s' received '%s'", ind, eparts[0], parts[0])
+		}
+		if parts[1] != eparts[1] {
+			t.Errorf("test [%d]: expected encoded claims '%s' received '%s'", ind, eparts[1], parts[1])
+		}
+	}
+}
+
+func TestPermsValidate(t *testing.T) {
+	te := tester.NewT(t)
+	tests := []struct {
+		perms *permsClaims
+		err   error
+	}{
+		{
+			perms: &permsClaims{},
+			err:   &ErrInvalidClaims,
+		},
+		{
+			perms: &permsClaims{Claims: &jwt.StandardClaims{}},
+			err:   &ErrInvalidPermissions,
+		},
+		{
+			perms: &permsClaims{Claims: &jwt.StandardClaims{}, Perms: &Permissions{}},
+			err:   &ErrInvalidClaims,
+		},
+	}
+	for ind, test := range tests {
+		err := test.perms.validate()
+		te.CheckError(ind, test.err, err)
 	}
 }
