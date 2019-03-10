@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -69,7 +68,6 @@ func (p *Permissions) GetToken(claims *jwt.StandardClaims, t time.Time, delay, v
 	}
 	jwtoken := jwt.NewWithClaims(jwt.SigningMethodHS256, pc)
 	jwtoken.Header["kid"] = keyID
-	fmt.Printf("signing key: '%s'\n", signingKey)
 	tokenstr, err := jwtoken.SignedString(signingKey)
 	if err != nil {
 		return nil, &ErrFailedToGenerateJwtToken
