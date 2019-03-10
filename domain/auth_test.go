@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -75,9 +76,11 @@ func TestStdKeyFunc(t *testing.T) {
 func TestGetToken(t *testing.T) {
 	te := tester.NewT(t)
 	t0 := time.Unix(0, 0)
+	t1 := time.Unix(1000000000, 0) //2001-09-09 01:46:40 +0000 UTC
 	delay := time.Duration(0)
-	dur := time.Minute * 30
+	dur := time.Hour * 24 * 365 * 100
 	tests := []struct {
+		t      time.Time
 		perms  *Permissions
 		claims *jwt.StandardClaims
 		keyID  string
@@ -86,28 +89,33 @@ func TestGetToken(t *testing.T) {
 		err    error
 	}{
 		{
-			perms: nil, claims: nil, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidPermissions,
+			t: t0, perms: nil, claims: nil, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidPermissions,
 		},
 		{
-			perms: &Permissions{}, claims: nil, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: nil, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
 		},
 		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
 		},
 		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
 		},
 		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
 		},
 		{
-			perms: &Permissions{}, claims: &jwt.StandardClaims{Id: "", Audience: "audience", Issuer: "issuer", Subject: "subject", IssuedAt: t0.Unix(), ExpiresAt: t0.Add(dur).Unix(), NotBefore: t0.Add(delay).Unix()}, keyID: "", key: []byte(""),
-			res: &AccessToken{Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjE4MDAsImlzcyI6Imlzc3VlciIsInN1YiI6InN1YmplY3QifSwiUGVybXMiOnsidWlkIjoiIiwidHlwZSI6MCwic3RhdHVzIjowLCJwZXJtaXNzaW9ucyI6bnVsbH19.szVOm2HhuXCLq14lbzkXMIv5GZRS3YKq1zdWUp-dbSQ"},
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Id: "", Audience: "audience", Issuer: "issuer", Subject: "subject", IssuedAt: t0.Unix(), ExpiresAt: t0.Add(dur).Unix(), NotBefore: t0.Add(delay).Unix()}, keyID: "", key: []byte(""),
+			res: &AccessToken{Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjMxNTM2MDAwMDAsImlzcyI6Imlzc3VlciIsInN1YiI6InN1YmplY3QifSwiUGVybXMiOnsidWlkIjoiIiwidHlwZSI6MCwic3RhdHVzIjowLCJwZXJtaXNzaW9ucyI6bnVsbH19.cmbtzf6pklQVh8xqWaeHlHe21_YLMcHq1amnmWLRjps"},
+			err: nil,
+		},
+		{
+			t: t1, perms: &Permissions{Uid: "001", AccountType: AccountType_USER, AccountStatus: AccountStatus_ACTIVE, Permissions: []string{"abcd"}}, claims: &jwt.StandardClaims{Id: "", Audience: "audience", Issuer: "issuer", Subject: "subject", IssuedAt: t1.Unix(), ExpiresAt: t1.Add(dur).Unix(), NotBefore: t1.Add(delay).Unix()}, keyID: "", key: []byte(""),
+			res: &AccessToken{Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjQxNTM2MDAwMDAsImlhdCI6MTAwMDAwMDAwMCwiaXNzIjoiaXNzdWVyIiwibmJmIjoxMDAwMDAwMDAwLCJzdWIiOiJzdWJqZWN0In0sIlBlcm1zIjp7InVpZCI6IjAwMSIsInR5cGUiOjAsInN0YXR1cyI6MSwicGVybWlzc2lvbnMiOlsiYWJjZCJdfX0.Z9pAsH2pQF7Uqpr8NRk_-5_giMZLbogNvhGcLre6XmQ"},
 			err: nil,
 		},
 	}
 	for ind, test := range tests {
-		res, err := test.perms.GetToken(test.claims, t0, delay, dur, test.keyID, test.key)
+		res, err := test.perms.GetToken(test.claims, test.t, delay, dur, test.keyID, test.key)
 		te.CheckError(ind, test.err, err)
 		if test.err != nil {
 			continue
@@ -139,9 +147,115 @@ func TestPermsValidate(t *testing.T) {
 			perms: &permsClaims{Claims: &jwt.StandardClaims{}, Perms: &Permissions{}},
 			err:   &ErrInvalidClaims,
 		},
+		{
+			perms: &permsClaims{Claims: &jwt.StandardClaims{Audience: "audience"}, Perms: &Permissions{}},
+			err:   &ErrInvalidClaims,
+		},
+		{
+			perms: &permsClaims{Claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, Perms: &Permissions{}},
+			err:   &ErrInvalidClaims,
+		},
+		{
+			perms: &permsClaims{Claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", Subject: "subject"}, Perms: &Permissions{}},
+			err:   nil,
+		},
 	}
+
 	for ind, test := range tests {
 		err := test.perms.validate()
 		te.CheckError(ind, test.err, err)
+	}
+}
+
+func TestGetPermissions(t *testing.T) {
+	te := tester.NewT(t)
+	f := func(issuer, audience, id, subject string) error {
+		if issuer != "issuer" {
+			return fmt.Errorf("invalid issuer '%s'", issuer)
+		}
+		if audience != "audience" {
+			return fmt.Errorf("invalid audience '%s'", audience)
+		}
+		if subject != "subject" {
+			return fmt.Errorf("invalid subject '%s'", subject)
+		}
+		return nil
+	}
+	f1 := func(issuer, audience, id, subject string) error {
+		if issuer != "issuer1" {
+			return fmt.Errorf("invalid issuer '%s'", issuer)
+		}
+		if audience != "audience1" {
+			return fmt.Errorf("invalid audience '%s'", audience)
+		}
+		if id != "id1" {
+			return fmt.Errorf("invalid id '%s'", id)
+		}
+		if subject != "subject1" {
+			return fmt.Errorf("invalid subject '%s'", subject)
+		}
+		return nil
+	}
+	tests := []struct {
+		a       *AccessToken
+		keyFunc jwt.Keyfunc
+		f       claimsValidator
+		res     *Permissions
+		err     error
+	}{
+		{
+			a: nil, err: &ErrInvalidAccessToken,
+		},
+		{
+			a: &AccessToken{Token: ""}, err: fmt.Errorf("token contains an invalid number of segments"),
+		},
+		{
+			a: &AccessToken{
+				Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjQxNTM2MDAwMDAsImlhdCI6MTAwMDAwMDAwMCwiaXNzIjoiaXNzdWVyIiwibmJmIjoxMDAwMDAwMDAwLCJzdWIiOiJzdWJqZWN0In0sIlBlcm1zIjp7InVpZCI6IjAwMSIsInR5cGUiOjAsInN0YXR1cyI6MSwicGVybWlzc2lvbnMiOlsiYWJjZCJdfX0.Z9pAsH2pQF7Uqpr8NRk_-5_giMZLbogNvhGcLre6XmQ",
+			},
+			keyFunc: nil,
+			res:     nil,
+			err:     fmt.Errorf("no Keyfunc was provided."),
+		},
+		{
+			a: &AccessToken{
+				Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjQxNTM2MDAwMDAsImlhdCI6MTAwMDAwMDAwMCwiaXNzIjoiaXNzdWVyIiwibmJmIjoxMDAwMDAwMDAwLCJzdWIiOiJzdWJqZWN0In0sIlBlcm1zIjp7InVpZCI6IjAwMSIsInR5cGUiOjAsInN0YXR1cyI6MSwicGVybWlzc2lvbnMiOlsiYWJjZCJdfX0.Z9pAsH2pQF7Uqpr8NRk_-5_giMZLbogNvhGcLre6XmQ",
+			},
+			f:       f,
+			keyFunc: func(a *jwt.Token) (interface{}, error) { return []byte(""), nil },
+			res:     &Permissions{Uid: "001", AccountType: AccountType_USER, AccountStatus: AccountStatus_ACTIVE, Permissions: []string{"abcd"}},
+			err:     nil,
+		},
+		{
+			a: &AccessToken{
+				Token: "eyJhbGciOiJIUzI1NiIsImtpZCI6IiIsInR5cCI6IkpXVCJ9.eyJDbGFpbXMiOnsiYXVkIjoiYXVkaWVuY2UiLCJleHAiOjQxNTM2MDAwMDAsImlhdCI6MTAwMDAwMDAwMCwiaXNzIjoiaXNzdWVyIiwibmJmIjoxMDAwMDAwMDAwLCJzdWIiOiJzdWJqZWN0In0sIlBlcm1zIjp7InVpZCI6IjAwMSIsInR5cGUiOjAsInN0YXR1cyI6MSwicGVybWlzc2lvbnMiOlsiYWJjZCJdfX0.Z9pAsH2pQF7Uqpr8NRk_-5_giMZLbogNvhGcLre6XmQ",
+			},
+			f:       f1,
+			keyFunc: func(a *jwt.Token) (interface{}, error) { return []byte(""), nil },
+			res:     &Permissions{Uid: "001", AccountType: AccountType_USER, AccountStatus: AccountStatus_ACTIVE, Permissions: []string{"abcd"}},
+			err:     fmt.Errorf("invalid issuer 'issuer'"),
+		},
+	}
+
+	for ind, test := range tests {
+		res, err := test.a.GetPermissions(test.keyFunc, test.f)
+		te.CheckError(ind, test.err, err)
+		if err != nil {
+			continue
+		}
+		if res != nil && test.res == nil {
+			t.Errorf("test [%d]: unexpected nil res", ind)
+			continue
+		} else if res == nil && test.res != nil {
+			t.Errorf("test [%d]: expected nil res", ind)
+			continue
+		}
+		if test.res == nil {
+			continue
+		}
+		te.DeepEqual(ind, "res.Uid", test.res.Uid, res.Uid)
+		te.DeepEqual(ind, "res.AccountStatus", test.res.AccountStatus, res.AccountStatus)
+		te.DeepEqual(ind, "res.AccountType", test.res.AccountType, res.AccountType)
+		te.DeepEqual(ind, "res.Permissions", test.res.Permissions, res.Permissions)
 	}
 }

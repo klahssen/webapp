@@ -13,7 +13,10 @@ type permsClaims struct {
 
 //Valid method to implement the jwt.Claims interface
 func (p *permsClaims) Valid() error {
-	return nil
+	if err := p.validate(); err != nil {
+		return err
+	}
+	return p.Claims.Valid()
 }
 
 //validate method checks if not nil pointers and if no empty fields
@@ -35,14 +38,23 @@ func (p *permsClaims) validate() error {
 }
 
 //GetPermissions extracts permissions from an access token
-func (t *AccessToken) GetPermissions(keyFunc jwt.Keyfunc) (*Permissions, error) {
+func (t *AccessToken) GetPermissions(keyFunc jwt.Keyfunc, f claimsValidator) (*Permissions, error) {
+	if t == nil {
+		return nil, &ErrInvalidAccessToken
+	}
 	claims := &permsClaims{}
 	_, err := jwt.ParseWithClaims(t.Token, claims, keyFunc)
 	if err != nil {
-		return nil, &ErrInvalidAccessToken
+		//return nil, &ErrInvalidAccessToken
+		return nil, err
+	}
+	if err = f(claims.Claims.Issuer, claims.Claims.Audience, claims.Claims.Id, claims.Claims.Subject); err != nil {
+		return nil, err
 	}
 	return claims.Perms, nil
 }
+
+type claimsValidator func(issuer, audience, id, subject string) error
 
 //GetToken returns an access token string from permissions. delay is used in not before, t is used for issued at and validity for expiration
 func (p *Permissions) GetToken(claims *jwt.StandardClaims, t time.Time, delay, validity time.Duration, keyID string, signingKey []byte) (*AccessToken, error) {
