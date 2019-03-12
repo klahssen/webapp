@@ -120,10 +120,15 @@ func (srv *accountsService) UpdatePassword(ctx context.Context, params *pb.Accou
 	}
 	return &pb.AccountResp{Uid: params.Uid}, nil
 }
-func (srv *accountsService) UpdatePrivileges(ctx context.Context, params *pb.AccountPrivileges) (*pb.AccountResp, error) {
+
+func (srv *accountsService) UpdateType(context.Context, *pb.AccountPrivileges) (*pb.AccountResp, error) {
 	return nil, fmt.Errorf("not implemented")
 }
-func (srv *accountsService) Get(ctx context.Context, params *pb.AccountID) (*pb.AccountJwtTokens, error) {
+func (srv *accountsService) UpdateStatus(context.Context, *pb.AccountPrivileges) (*pb.AccountResp, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+func (srv *accountsService) Get(ctx context.Context, params *pb.AccountID) (*pb.AccountEntity, error) {
 	return nil, fmt.Errorf("not implemented")
 }
 func (srv *accountsService) Authenticate(ctx context.Context, params *pb.AccountCredentials) (*pb.AccountJwtTokens, error) {

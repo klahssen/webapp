@@ -118,7 +118,7 @@ func ValidatePassword(pw string) error {
 //ValidateEmail validator
 func ValidateEmail(email string) error {
 	if err := validators.EmailAddress(email); err != nil {
-		return &ErrAccountInvalidPassword
+		return &ErrAccountInvalidEmail
 	}
 	return nil
 }
