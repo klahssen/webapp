@@ -26,7 +26,7 @@ enum AccountStatus {
 message AccountEntity {
 	// `datastore:"-"`
 	string uid=1 [json_name="uid", (gogoproto.jsontag)="uid", (gogoproto.moretags) = "db:\"uid\""];
-	string em=3 [json_name="em", (gogoproto.jsontag)="em", (gogoproto.moretags) = "db:\"em\""];
+	string em=3 [json_name="email", (gogoproto.jsontag)="email", (gogoproto.moretags) = "db:\"email\""];
 	string pw=4 [json_name="-", (gogoproto.jsontag)="-", (gogoproto.moretags) = "db:\"pw\""];
 	int64 created_at=5 [json_name="crea_at", (gogoproto.jsontag)="crea_at",  (gogoproto.moretags) = "db:\"crea_at\""];
 	int64 updated_at=6 [json_name="upd_at", (gogoproto.jsontag)="upd_at",  (gogoproto.moretags) = "db:\"upd_at\""];
