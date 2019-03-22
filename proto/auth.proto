@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package domain;
-option go_package = "github.com/klahssen/webapp/domain";
+option go_package = "github.com/klahssen/webapp/pkg/domain";
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "accounts.proto";
@@ -18,9 +18,10 @@ enum Action {
 
 //AuthParams holds payload to check authorization
 message AuthParams {
-    Action action=1 [json_name="action", (gogoproto.jsontag)="action", (gogoproto.moretags) = "db:\"action\""];
-    string owner=2 [json_name="owner", (gogoproto.jsontag)="owner", (gogoproto.moretags) = "db:\"owner\""];
-    string target=3 [json_name="target", (gogoproto.jsontag)="target", (gogoproto.moretags) = "db:\"target\""];
+    Action action=1 [json_name="action", (gogoproto.jsontag)="action", (gogoproto.moretags) = "db:\"-\""];
+    string owner=2 [json_name="owner", (gogoproto.jsontag)="owner", (gogoproto.moretags) = "db:\"-\""];
+    string target=3 [json_name="target", (gogoproto.jsontag)="target", (gogoproto.moretags) = "db:\"-\""];
+    string token=4 [json_name="token", (gogoproto.jsontag)="token", (gogoproto.moretags) = "db:\"-\""];
 }
 
 message AuthResp {
@@ -40,5 +41,4 @@ message Permissions {
 
 service Authorization {
     rpc IsAuthorized(AuthParams) returns (AuthResp);
-    rpc GetPermissions(AccessToken) returns (Permissions);
 }
