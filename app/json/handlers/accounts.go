@@ -7,8 +7,8 @@ import (
 
 	"github.com/go-zoo/bone"
 	"github.com/klahssen/webapp/app/json/format"
+	contx "github.com/klahssen/webapp/pkg/context"
 	pb "github.com/klahssen/webapp/pkg/domain"
-	h "github.com/klahssen/webapp/pkg/http"
 	"github.com/klahssen/webapp/pkg/log"
 )
 
@@ -26,8 +26,8 @@ func NewAccounts(svc pb.AccountsServer) *Accounts {
 func (a *Accounts) GetByID(w http.ResponseWriter, r *http.Request) {
 	t0 := time.Now()
 	ctx := r.Context()
-	token, ok := ctx.Value(h.JwtTokenInCtx).(string)
-	t, ok2 := ctx.Value(h.ReqTimeInCtx).(time.Time)
+	token, ok := ctx.Value(contx.JwtToken).(string)
+	t, ok2 := ctx.Value(contx.ReqTime).(time.Time)
 	if ok2 {
 		t0 = t
 	}
