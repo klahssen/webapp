@@ -10,7 +10,8 @@ import (
 
 	dt "cloud.google.com/go/datastore"
 	"github.com/go-zoo/bone"
-	"github.com/klahssen/webapp/pkg/http/json"
+	"github.com/klahssen/webapp/app/json/middlewares"
+	"github.com/klahssen/webapp/pkg/log"
 	"github.com/klahssen/webapp/pkg/repos/gcloud/datastore"
 	"github.com/klahssen/webapp/pkg/services/accounts"
 	emails "github.com/klahssen/webapp/pkg/services/emails/local"
@@ -39,13 +40,13 @@ func main() {
 	p := 0
 	var err error
 	if p, err = strconv.Atoi(port); err != nil {
-		logger.Fatalf("invalid port '%s': %v", port, err)
+		log.Fatalf("invalid port '%s': %v", port, err)
 	}
 	projectID := dt.DetectProjectID
 	namespace := ""
 	mux, err := getMux(projectID, namespace)
 	if err != nil {
-		logger.Fatalf("failed to get mux: %v", err)
+		log.Fatalf("failed to get mux: %v", err)
 	}
 	server := http.Server{
 		Addr:              fmt.Sprintf(":%d", p),
@@ -55,7 +56,7 @@ func main() {
 		IdleTimeout:       time.Second * 3,
 		Handler:           mux,
 	}
-	logger.Infof("Listening on port %d", p)
+	log.Infof("Listening on port %d", p)
 	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}
@@ -68,8 +69,8 @@ func getMux(projectID, namespace string) (http.Handler, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "get API V1")
 	}
-	mux.SubRoute("/v1/", apiV1)
-	return mux, nil
+	mux.SubRoute("/v1", apiV1)
+	return middlewares.Log(mux), nil
 }
 
 func getAPIV1(projectID, namespace string) (http.Handler, error) {
@@ -83,10 +84,10 @@ func getAPIV1(projectID, namespace string) (http.Handler, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "accounts: set service")
 	}
-	api, err := json.NewAPI(accSrv)
+	api, err := newAPI(accSrv)
 	if err != nil {
 		return nil, errors.Wrap(err, "set api")
 	}
-	mux.GetFunc("accounts/:id", api.Accounts().GetByID)
+	mux.GetFunc("/accounts/:id", api.Accounts().GetByID)
 	return mux, nil
 }

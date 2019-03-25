@@ -22,7 +22,7 @@ func New(repo repos.Accounts, emailsSrv pb.EmailsServer) (pb.AccountsServer, err
 	if err := srv.validate(); err != nil {
 		return nil, err
 	}
-	return srv, fmt.Errorf("not implemented")
+	return srv, nil
 }
 
 func (srv *accountsService) validate() error {
