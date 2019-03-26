@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/klahssen/webapp/app/json/format"
 	contx "github.com/klahssen/webapp/pkg/context"
+	"github.com/klahssen/webapp/pkg/json/format"
 )
 
 type ctxKey string

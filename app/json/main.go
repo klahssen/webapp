@@ -13,7 +13,7 @@ import (
 	"github.com/justinas/alice"
 
 	//"github.com/justinas/nosurf"
-	"github.com/klahssen/webapp/app/json/middlewares"
+	"github.com/klahssen/webapp/pkg/json/middlewares"
 	"github.com/klahssen/webapp/pkg/log"
 	"github.com/klahssen/webapp/pkg/repos/gcloud/datastore"
 	"github.com/klahssen/webapp/pkg/services/accounts"
@@ -48,7 +48,7 @@ func main() {
 		log.Fatalf("invalid port '%s': %v", port, err)
 	}
 	projectID := dt.DetectProjectID
-	namespace := ""
+	namespace := "v1"
 	mux, err := getMux(projectID, namespace)
 	if err != nil {
 		log.Fatalf("failed to get mux: %v", err)

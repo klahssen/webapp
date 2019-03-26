@@ -3,6 +3,7 @@ package datastore
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"cloud.google.com/go/datastore"
 	pb "github.com/klahssen/webapp/pkg/domain"
@@ -112,7 +113,7 @@ func (r *accountsRepo) Get(ctx context.Context, uid string) (*pb.AccountEntity, 
 		return nil, err
 	}
 	res := &pb.AccountEntity{}
-	key, err := decodeKey(uid)
+	key, err := getKey(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +121,7 @@ func (r *accountsRepo) Get(ctx context.Context, uid string) (*pb.AccountEntity, 
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		if err.Error() == datastore.ErrNoSuchEntity.Error() {
-			return nil, errInternalServerError
+			return nil, errNotFound
 		} else if err.Error() == datastore.ErrInvalidKey.Error() {
 			return nil, errInvalidUID
 		}
@@ -133,7 +134,7 @@ func (r *accountsRepo) Delete(ctx context.Context, uid string) error {
 	if err != nil {
 		return err
 	}
-	key, err := decodeKey(uid)
+	key, err := getKey(uid)
 	if err != nil {
 		return err
 	}
@@ -173,7 +174,7 @@ func (r *accountsRepo) Put(ctx context.Context, uid string, entity *pb.AccountEn
 	if entity == nil {
 		return &pb.ErrNothingToProcess
 	}
-	k, err := decodeKey(uid)
+	k, err := getKey(uid)
 	if err != nil {
 		return err
 	}
@@ -191,11 +192,12 @@ func newKey(namespace string) *datastore.Key {
 	return k
 }
 
-func decodeKey(uid string) (*datastore.Key, error) {
-	k, err := datastore.DecodeKey(uid)
+func getKey(uid string) (*datastore.Key, error) {
+	id, err := strconv.ParseInt(uid, 10, 64)
 	if err != nil {
-		log.Errorf("failed to decode key: %v", err)
+		log.Errorf("failed to convert uid to int: %v", err)
 		return nil, errInvalidUID
 	}
+	k := datastore.IDKey(kind, id, nil)
 	return k, nil
 }

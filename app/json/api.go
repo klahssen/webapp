@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	handlers "github.com/klahssen/webapp/app/json/handlers"
 	pb "github.com/klahssen/webapp/pkg/domain"
+	handlers "github.com/klahssen/webapp/pkg/json/handlers"
 	//"github.com/klahssen/webapp/pkg/log"
 )
 

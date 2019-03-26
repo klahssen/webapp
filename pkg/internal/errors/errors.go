@@ -4,21 +4,26 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/klahssen/webapp/pkg/log"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/grpclog"
 )
 
 //Error implements the error interface
 type Error struct {
-	Code int32  `json:"code"`
-	Msg  string `json:"msg"`
+	Code codes.Code `json:"code"` //grpc status code
+	Msg  string     `json:"msg"`
+}
+
+//GetStatusCode returns http StatusCode from grpc code
+func (e *Error) GetStatusCode() int {
+	return HTTPStatusFromGrpcCode(e.Code)
 }
 
 func (e *Error) Error() string {
 	if e == nil {
 		return ""
 	}
-	return fmt.Sprintf("ERR_%03d: %s", e.Code, e.Msg)
+	return fmt.Sprintf("%s", e.Msg)
 }
 
 //HTTPStatusFromGrpcCode converts a grpc status code to http.StatusCode
@@ -60,6 +65,7 @@ func HTTPStatusFromGrpcCode(code codes.Code) int {
 		return http.StatusInternalServerError
 	}
 
-	grpclog.Infof("Unknown gRPC error code: %v", code)
+	//grpclog.Infof("Unknown gRPC error code: %v", code)
+	log.Infof("Unknown gRPC error code: %v", code)
 	return http.StatusInternalServerError
 }
