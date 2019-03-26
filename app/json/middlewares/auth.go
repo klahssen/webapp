@@ -5,25 +5,26 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
+	"github.com/klahssen/webapp/app/json/format"
 	contx "github.com/klahssen/webapp/pkg/context"
 )
 
 type ctxKey string
 
-//AuthHeader checks if Authorization header is set
-func AuthHeader(next http.Handler) http.Handler {
+//TokenFromHeader checks if Authorization header is set
+func TokenFromHeader(next http.Handler) http.Handler {
+	t0 := time.Now()
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		token, err := getAuthHeader(r)
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			fmt.Fprintf(w, "Unauthorized: %s\n", err.Error())
+			format.WriteResponse(w, http.StatusUnauthorized, err, nil, t0)
 			return
 		}
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, contx.JwtToken, token)
-		ctx = context.WithValue(ctx, contx.ReqTime, token)
-		r.WithContext(ctx)
+		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)

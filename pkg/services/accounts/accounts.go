@@ -129,7 +129,10 @@ func (srv *accountsService) UpdateStatus(context.Context, *pb.AccountPrivileges)
 }
 
 func (srv *accountsService) Get(ctx context.Context, params *pb.AccountID) (*pb.AccountEntity, error) {
-	return nil, fmt.Errorf("not implemented")
+	if params == nil {
+		return nil, status.Error(codes.InvalidArgument, pb.ErrNothingToProcess.Error())
+	}
+	return srv.repo.Get(ctx, params.Id)
 }
 func (srv *accountsService) Authenticate(ctx context.Context, params *pb.AccountCredentials) (*pb.AccountJwtTokens, error) {
 	return nil, fmt.Errorf("not implemented")
