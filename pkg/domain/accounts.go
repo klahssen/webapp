@@ -1,13 +1,11 @@
 package domain
 
 import (
-	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
-	"github.com/klahssen/webapp/pkg/internal/errors"
 	"github.com/klahssen/webapp/pkg/internal/validators"
+	"github.com/klahssen/webapp/pkg/log"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -46,11 +44,13 @@ func (a *AccountEntity) Format() {
 //Hash will hash the password
 func (a *AccountEntity) Hash() error {
 	if a == nil {
-		return fmt.Errorf("nil pointer")
+		log.Errorf("nil pointer")
+		return ErrInternal
 	}
 	hashed, err := bcrypt.GenerateFromPassword([]byte(a.Pw), bcryptCost)
 	if err != nil {
-		return &errors.Error{Code: http.StatusInternalServerError, Msg: err.Error()}
+		log.Errorf("failed to generate bcrypt hash from password: %v", err)
+		return ErrInternal
 	}
 	a.Pw = string(hashed)
 	return nil
@@ -59,11 +59,12 @@ func (a *AccountEntity) Hash() error {
 //ComparePassword checks if the provided password matches accounts password
 func (a *AccountEntity) ComparePassword(pw string) error {
 	if a == nil {
-		return fmt.Errorf("nil pointer")
+		log.Errorf("nil pointer")
+		return ErrInternal
 	}
 	err := bcrypt.CompareHashAndPassword([]byte(a.Pw), []byte(pw))
 	if err != nil {
-		return &ErrAuthenticationFailed
+		return ErrAuthenticationFailed
 	}
 	return nil
 }
@@ -71,7 +72,8 @@ func (a *AccountEntity) ComparePassword(pw string) error {
 //ValidateNew AccountEntity data
 func (a *AccountEntity) ValidateNew() error {
 	if a == nil {
-		return fmt.Errorf("empty pointer")
+		log.Errorf("nil pointer")
+		return ErrInternal
 	}
 	var err error
 	if err = ValidateEmail(a.Em); err != nil {
@@ -88,7 +90,8 @@ func (a *AccountEntity) ValidateNew() error {
 //Validate account info
 func (a *AccountEntity) Validate() error {
 	if a == nil {
-		return fmt.Errorf("empty pointer")
+		log.Errorf("nil pointer")
+		return ErrInternal
 	}
 	var err error
 	if err = validators.EmailAddress(a.Em); err != nil {
@@ -110,7 +113,7 @@ func (a *AccountEntity) RecordUpdate() {
 func ValidatePassword(pw string) error {
 	l := len(pw)
 	if l < minPasswordLength || l > maxPasswordLength {
-		return &ErrAccountInvalidPassword
+		return ErrAccountInvalidPassword
 	}
 	return nil
 }
@@ -118,7 +121,7 @@ func ValidatePassword(pw string) error {
 //ValidateEmail validator
 func ValidateEmail(email string) error {
 	if err := validators.EmailAddress(email); err != nil {
-		return &ErrAccountInvalidEmail
+		return ErrAccountInvalidEmail
 	}
 	return nil
 }

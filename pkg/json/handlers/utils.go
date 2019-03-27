@@ -54,7 +54,7 @@ func analyzeError(err error) (int, error) {
 		return http.StatusOK, nil
 	}
 	if e, ok := err.(*errors.Error); ok {
-		return e.GetStatusCode(), fmt.Errorf(e.Msg)
+		return e.GetStatusCode(), e
 	}
 	return http.StatusInternalServerError, err
 }

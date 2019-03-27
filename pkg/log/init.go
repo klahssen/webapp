@@ -24,6 +24,7 @@ type Logger interface {
 }
 
 func init() {
+	//l := zap.NewExample(zap.Development())
 	l, _ := zap.NewDevelopment() //NewProduction
 	logger = l.Sugar()
 }

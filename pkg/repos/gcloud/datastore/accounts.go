@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/klahssen/webapp/pkg/internal/errors"
+
 	"cloud.google.com/go/datastore"
 	pb "github.com/klahssen/webapp/pkg/domain"
 	"github.com/klahssen/webapp/pkg/log"
 	"github.com/klahssen/webapp/pkg/repos"
+	"google.golang.org/grpc/codes"
 )
 
 const (
@@ -21,9 +24,9 @@ type accountsRepo struct {
 }
 
 var (
-	errInternalServerError = fmt.Errorf("internal server error")
-	errNotFound            = fmt.Errorf("not found")
-	errInvalidUID          = fmt.Errorf("invalid uid")
+	errInternalServerError = errors.New("internal server error", codes.Internal)
+	errNotFound            = errors.New("not found", codes.NotFound)
+	errInvalidUID          = errors.New("invalid uid", codes.InvalidArgument)
 )
 
 //NewAccountsRepo returns an instance of the accounts repo
@@ -156,7 +159,7 @@ func (r *accountsRepo) PutNew(ctx context.Context, entity *pb.AccountEntity) (st
 		return "", err
 	}
 	if entity == nil {
-		return "", &pb.ErrNothingToProcess
+		return "", pb.ErrNothingToProcess
 	}
 	k, err := client.Put(ctx, newKey(r.namespace), entity)
 	if err != nil {
@@ -172,7 +175,7 @@ func (r *accountsRepo) Put(ctx context.Context, uid string, entity *pb.AccountEn
 		return err
 	}
 	if entity == nil {
-		return &pb.ErrNothingToProcess
+		return pb.ErrNothingToProcess
 	}
 	k, err := getKey(uid)
 	if err != nil {

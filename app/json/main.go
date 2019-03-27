@@ -13,6 +13,7 @@ import (
 	"github.com/justinas/alice"
 
 	//"github.com/justinas/nosurf"
+	"github.com/klahssen/webapp/pkg/json/api"
 	"github.com/klahssen/webapp/pkg/json/middlewares"
 	"github.com/klahssen/webapp/pkg/log"
 	"github.com/klahssen/webapp/pkg/repos/gcloud/datastore"
@@ -101,7 +102,7 @@ func getAPIV1(projectID, namespace string) (http.Handler, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "accounts: set service")
 	}
-	api, err := newAPI(accSrv)
+	api, err := api.NewAPI(accSrv)
 	if err != nil {
 		return nil, errors.Wrap(err, "set api")
 	}

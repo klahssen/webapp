@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/klahssen/webapp/pkg/log"
 )
 
 type permsClaims struct {
@@ -28,16 +29,17 @@ func (p *permsClaims) Valid() error {
 //validate method checks if not nil pointers and if no empty fields
 func (p *permsClaims) validate() error {
 	if p == nil {
-		return &ErrInvalidClaims
+		log.Errorf("nil pointer")
+		return ErrInvalidClaims
 	}
 	if p.Claims == nil {
-		return &ErrInvalidClaims
+		return ErrInvalidClaims
 	}
 	if p.Perms == nil {
-		return &ErrInvalidPermissions
+		return ErrInvalidPermissions
 	}
 	if p.Claims.Audience == "" || p.Claims.Issuer == "" || p.Claims.Subject == "" {
-		return &ErrInvalidClaims
+		return ErrInvalidClaims
 	}
 
 	return nil
@@ -46,7 +48,7 @@ func (p *permsClaims) validate() error {
 //GetPermissions extracts permissions from an access token
 func (t *AccessToken) GetPermissions(keyFunc jwt.Keyfunc, f ClaimsValidator) (*Permissions, error) {
 	if t == nil {
-		return nil, &ErrInvalidAccessToken
+		return nil, ErrInvalidAccessToken
 	}
 	claims := &permsClaims{}
 	_, err := jwt.ParseWithClaims(t.Token, claims, keyFunc)
@@ -63,10 +65,10 @@ func (t *AccessToken) GetPermissions(keyFunc jwt.Keyfunc, f ClaimsValidator) (*P
 //GetToken returns an access token string from permissions. delay is used in not before, t is used for issued at and validity for expiration
 func (p *Permissions) GetToken(claims *jwt.StandardClaims, t time.Time, delay, validity time.Duration, keyID string, signingKey []byte) (*AccessToken, error) {
 	if p == nil {
-		return nil, &ErrInvalidPermissions
+		return nil, ErrInvalidPermissions
 	}
 	if claims == nil {
-		return nil, &ErrInvalidClaims
+		return nil, ErrInvalidClaims
 	}
 	if validity < 0 {
 		validity *= -1
@@ -86,7 +88,7 @@ func (p *Permissions) GetToken(claims *jwt.StandardClaims, t time.Time, delay, v
 	jwtoken.Header["kid"] = keyID
 	tokenstr, err := jwtoken.SignedString(signingKey)
 	if err != nil {
-		return nil, &ErrFailedToGenerateJwtToken
+		return nil, ErrFailedToGenerateJwtToken
 	}
 	return &AccessToken{Token: tokenstr}, nil
 }

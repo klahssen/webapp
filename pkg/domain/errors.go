@@ -5,28 +5,29 @@ import (
 	"net/http"
 
 	"github.com/klahssen/webapp/pkg/internal/errors"
+	"google.golang.org/grpc/codes"
 	//"google.golang.org/grpc/codes"
 	//"google.golang.org/grpc/status"
 )
 
 //errors
 var (
-	ErrNotImplemented           = errors.Error{Code: 000, Msg: "not implemented"}
-	ErrAccountInvalidEmail      = errors.Error{Code: 001, Msg: "invalid email address"}
-	ErrAccountEmailConflict     = errors.Error{Code: 002, Msg: "another account exists with this email"}
-	ErrAccountInvalidPassword   = errors.Error{Code: 003, Msg: fmt.Sprintf("invalid password, must be between %d and %d characters", minPasswordLength, maxPasswordLength)}
-	ErrNothingToProcess         = errors.Error{Code: http.StatusBadRequest, Msg: "nothing to process"}
-	ErrAuthenticationFailed     = errors.Error{Code: http.StatusUnauthorized, Msg: "invalid password or identifier"}
-	ErrMissingDependency        = errors.Error{Code: http.StatusInternalServerError, Msg: "missing/nil dependency injection"}
-	ErrNotFound                 = errors.Error{Code: http.StatusNotFound, Msg: "not found"}
-	ErrNotAuthorized            = errors.Error{Code: http.StatusUnauthorized, Msg: "not authorized"}
-	ErrEmptyContext             = errors.Error{Code: http.StatusBadRequest, Msg: "empty context"}
-	ErrMissingAccessToken       = errors.Error{Code: http.StatusBadRequest, Msg: "missing access token"}
-	ErrInvalidAccessToken       = errors.Error{Code: http.StatusBadRequest, Msg: "invalid access token"}
-	ErrAccessTokenExpired       = errors.Error{Code: http.StatusBadRequest, Msg: "access token expired"}
-	ErrInternal                 = errors.Error{Code: http.StatusInternalServerError, Msg: "internal server error"}
-	ErrInvalidKeyID             = errors.Error{Code: http.StatusInternalServerError, Msg: "invalid access token key ID"}
-	ErrInvalidPermissions       = errors.Error{Code: http.StatusInternalServerError, Msg: "invalid permissions, check all fields"}
-	ErrInvalidClaims            = errors.Error{Code: http.StatusInternalServerError, Msg: "invalid claims, check all fields"}
-	ErrFailedToGenerateJwtToken = errors.Error{Code: http.StatusInternalServerError, Msg: "failed to generate jwt token"}
+	ErrNotImplemented           = errors.New("not implemented", codes.Internal)
+	ErrAccountInvalidEmail      = errors.New("invalid email address", codes.InvalidArgument)
+	ErrAccountEmailConflict     = errors.New("another account exists with this email", codes.AlreadyExists)
+	ErrAccountInvalidPassword   = errors.New(fmt.Sprintf("invalid password, must be between %d and %d characters", minPasswordLength, maxPasswordLength), codes.InvalidArgument)
+	ErrNothingToProcess         = errors.New("nothing to process", codes.InvalidArgument)
+	ErrAuthenticationFailed     = errors.New("invalid password or identifier", codes.Unauthenticated)
+	ErrMissingDependency        = errors.New("missing/nil dependency injection", codes.Internal)
+	ErrNotFound                 = errors.New("not found", codes.NotFound)
+	ErrNotAuthorized            = errors.New("not authorized", codes.Unauthenticated)
+	ErrEmptyContext             = errors.New("empty context", codes.InvalidArgument)
+	ErrMissingAccessToken       = errors.New("missing access token", codes.Unauthenticated)
+	ErrInvalidAccessToken       = errors.New("invalid access token", codes.Unauthenticated)
+	ErrAccessTokenExpired       = errors.New("access token expired", codes.Unauthenticated)
+	ErrInternal                 = errors.New("internal server error", http.StatusInternalServerError)
+	ErrInvalidKeyID             = errors.New("invalid access token key ID", codes.InvalidArgument)
+	ErrInvalidPermissions       = errors.New("invalid permissions, check all fields", codes.PermissionDenied)
+	ErrInvalidClaims            = errors.New("invalid claims, check all fields", codes.PermissionDenied)
+	ErrFailedToGenerateJwtToken = errors.New("failed to generate jwt token", http.StatusInternalServerError)
 )

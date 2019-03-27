@@ -10,24 +10,33 @@ import (
 
 //Error implements the error interface
 type Error struct {
-	Code codes.Code `json:"code"` //grpc status code
-	Msg  string     `json:"msg"`
+	code codes.Code //grpc status code
+	msg  string
+}
+
+func New(msg string, code codes.Code) *Error {
+	return &Error{code: code, msg: msg}
 }
 
 //GetStatusCode returns http StatusCode from grpc code
 func (e *Error) GetStatusCode() int {
-	return HTTPStatusFromGrpcCode(e.Code)
+	return httpStatusFromGrpcCode(e.code)
+}
+
+//GetStatusCode returns http StatusCode from grpc code
+func (e *Error) GetGrpcCode() codes.Code {
+	return e.code
 }
 
 func (e *Error) Error() string {
 	if e == nil {
 		return ""
 	}
-	return fmt.Sprintf("%s", e.Msg)
+	return fmt.Sprintf("%s", e.msg)
 }
 
-//HTTPStatusFromGrpcCode converts a grpc status code to http.StatusCode
-func HTTPStatusFromGrpcCode(code codes.Code) int {
+//httpStatusFromGrpcCode converts a grpc status code to http.StatusCode
+func httpStatusFromGrpcCode(code codes.Code) int {
 	switch code {
 	case codes.OK:
 		return http.StatusOK

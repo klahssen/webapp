@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -9,19 +9,19 @@ import (
 )
 
 //api holds the inner services
-type api struct {
+type API struct {
 	accounts *handlers.Accounts
 }
 
 //NewAPI gets a new instance of the API
-func newAPI(accounts pb.AccountsServer) (*api, error) {
+func NewAPI(accounts pb.AccountsServer) (*API, error) {
 	if accounts == nil {
 		return nil, fmt.Errorf("accounts is nil")
 	}
-	return &api{accounts: handlers.NewAccounts(accounts)}, nil
+	return &API{accounts: handlers.NewAccounts(accounts)}, nil
 }
 
 //Accounts returns handlers related to accounts manipulation
-func (a *api) Accounts() *handlers.Accounts {
+func (a *API) Accounts() *handlers.Accounts {
 	return a.accounts
 }

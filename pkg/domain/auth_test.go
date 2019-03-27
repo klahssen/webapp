@@ -16,28 +16,28 @@ const (
 
 func stdKeyFunc(jwttoken *jwt.Token) (interface{}, error) {
 	if jwttoken == nil {
-		return nil, &ErrInvalidAccessToken
+		return nil, ErrInvalidAccessToken
 	}
 	if _, ok := jwttoken.Method.(*jwt.SigningMethodHMAC); !ok {
-		return nil, &ErrInvalidAccessToken //fmt.Errorf("Unexpected signing method: %v", jwttoken.Header["alg"])
+		return nil, ErrInvalidAccessToken
 	}
 	typ := jwttoken.Header["typ"]
 	alg := jwttoken.Header["alg"]
 	keyID, ok := jwttoken.Header["kid"].(string)
 	if typ != "JWT" {
-		return nil, &ErrInvalidAccessToken
+		return nil, ErrInvalidAccessToken
 	}
 	if alg != "HS256" {
-		return nil, &ErrInvalidAccessToken
+		return nil, ErrInvalidAccessToken
 	}
 	if !ok {
-		return nil, &ErrInvalidAccessToken
+		return nil, ErrInvalidAccessToken
 	}
 	switch keyID {
 	case "key1":
 		return key1, nil
 	}
-	return nil, &ErrInvalidAccessToken
+	return nil, ErrInvalidAccessToken
 }
 
 func TestStdKeyFunc(t *testing.T) {
@@ -50,7 +50,7 @@ func TestStdKeyFunc(t *testing.T) {
 		{
 			t:   &jwt.Token{Method: jwt.SigningMethodES384, Header: map[string]interface{}{"kid": "key1"}},
 			key: nil,
-			err: &ErrInvalidAccessToken,
+			err: ErrInvalidAccessToken,
 		},
 		{
 			t:   &jwt.Token{Method: jwt.SigningMethodHS256, Header: map[string]interface{}{"kid": "key1", "typ": "JWT", "alg": "HS256"}},
@@ -60,7 +60,7 @@ func TestStdKeyFunc(t *testing.T) {
 		{
 			t:   &jwt.Token{Header: map[string]interface{}{"kid": "key2"}},
 			key: nil,
-			err: &ErrInvalidAccessToken,
+			err: ErrInvalidAccessToken,
 		},
 	}
 	for ind, test := range tests {
@@ -89,19 +89,19 @@ func TestGetToken(t *testing.T) {
 		err    error
 	}{
 		{
-			t: t0, perms: nil, claims: nil, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidPermissions,
+			t: t0, perms: nil, claims: nil, keyID: "", key: []byte(""), res: nil, err: ErrInvalidPermissions,
 		},
 		{
-			t: t0, perms: &Permissions{}, claims: nil, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: nil, keyID: "", key: []byte(""), res: nil, err: ErrInvalidClaims,
 		},
 		{
-			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{}, keyID: "", key: []byte(""), res: nil, err: ErrInvalidClaims,
 		},
 		{
-			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience"}, keyID: "", key: []byte(""), res: nil, err: ErrInvalidClaims,
 		},
 		{
-			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, keyID: "", key: []byte(""), res: nil, err: &ErrInvalidClaims,
+			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, keyID: "", key: []byte(""), res: nil, err: ErrInvalidClaims,
 		},
 		{
 			t: t0, perms: &Permissions{}, claims: &jwt.StandardClaims{Id: "", Audience: "audience", Issuer: "issuer", Subject: "subject", IssuedAt: t0.Unix(), ExpiresAt: t0.Add(dur).Unix(), NotBefore: t0.Add(delay).Unix()}, keyID: "", key: []byte(""),
@@ -137,23 +137,23 @@ func TestPermsValidate(t *testing.T) {
 	}{
 		{
 			perms: &permsClaims{},
-			err:   &ErrInvalidClaims,
+			err:   ErrInvalidClaims,
 		},
 		{
 			perms: &permsClaims{Claims: &jwt.StandardClaims{}},
-			err:   &ErrInvalidPermissions,
+			err:   ErrInvalidPermissions,
 		},
 		{
 			perms: &permsClaims{Claims: &jwt.StandardClaims{}, Perms: &Permissions{}},
-			err:   &ErrInvalidClaims,
+			err:   ErrInvalidClaims,
 		},
 		{
 			perms: &permsClaims{Claims: &jwt.StandardClaims{Audience: "audience"}, Perms: &Permissions{}},
-			err:   &ErrInvalidClaims,
+			err:   ErrInvalidClaims,
 		},
 		{
 			perms: &permsClaims{Claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer"}, Perms: &Permissions{}},
-			err:   &ErrInvalidClaims,
+			err:   ErrInvalidClaims,
 		},
 		{
 			perms: &permsClaims{Claims: &jwt.StandardClaims{Audience: "audience", Issuer: "issuer", Subject: "subject"}, Perms: &Permissions{}},
@@ -204,7 +204,7 @@ func TestGetPermissions(t *testing.T) {
 		err     error
 	}{
 		{
-			a: nil, err: &ErrInvalidAccessToken,
+			a: nil, err: ErrInvalidAccessToken,
 		},
 		{
 			a: &AccessToken{Token: ""}, err: fmt.Errorf("token contains an invalid number of segments"),
