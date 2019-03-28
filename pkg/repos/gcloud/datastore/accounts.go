@@ -21,6 +21,7 @@ const (
 type accountsRepo struct {
 	projectID string
 	namespace string
+	client    *datastore.Client
 }
 
 var (
@@ -34,9 +35,15 @@ func NewAccountsRepo(projectID, namespace string) (repos.Accounts, error) {
 	if projectID == "" {
 		return nil, fmt.Errorf("invalid projectID '%s'", projectID)
 	}
-	return &accountsRepo{
+	r := &accountsRepo{
 		projectID: projectID, namespace: namespace,
-	}, nil
+	}
+	client, err := r.getClient(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	r.client = client
+	return r, nil
 }
 
 func (r *accountsRepo) getClient(ctx context.Context) (*datastore.Client, error) {
@@ -49,12 +56,8 @@ func (r *accountsRepo) getClient(ctx context.Context) (*datastore.Client, error)
 }
 
 func (r *accountsRepo) CountByStatus(ctx context.Context, status pb.AccountStatus) (int, error) {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return 0, err
-	}
 	q := datastore.NewQuery(kind).Filter("status=", status).KeysOnly()
-	n, err := client.Count(ctx, q)
+	n, err := r.client.Count(ctx, q)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		return 0, errInternalServerError
@@ -62,12 +65,8 @@ func (r *accountsRepo) CountByStatus(ctx context.Context, status pb.AccountStatu
 	return n, nil
 }
 func (r *accountsRepo) CountByType(ctx context.Context, typ pb.AccountType) (int, error) {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return 0, err
-	}
 	q := datastore.NewQuery(kind).Filter("type=", typ).KeysOnly()
-	n, err := client.Count(ctx, q)
+	n, err := r.client.Count(ctx, q)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		return 0, errInternalServerError
@@ -75,12 +74,8 @@ func (r *accountsRepo) CountByType(ctx context.Context, typ pb.AccountType) (int
 	return n, nil
 }
 func (r *accountsRepo) CountByEmail(ctx context.Context, email string) (int, error) {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return 0, err
-	}
 	q := datastore.NewQuery(kind).Filter("email=", email).KeysOnly()
-	n, err := client.Count(ctx, q)
+	n, err := r.client.Count(ctx, q)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		return 0, errInternalServerError
@@ -88,13 +83,9 @@ func (r *accountsRepo) CountByEmail(ctx context.Context, email string) (int, err
 	return n, nil
 }
 func (r *accountsRepo) GetByEmail(ctx context.Context, email string) ([]*pb.AccountEntity, error) {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return nil, err
-	}
 	res := []*pb.AccountEntity{}
 	q := datastore.NewQuery(kind).Filter("email=", email)
-	keys, err := client.GetAll(ctx, q, &res)
+	keys, err := r.client.GetAll(ctx, q, &res)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		return nil, errInternalServerError
@@ -111,16 +102,12 @@ func (r *accountsRepo) GetByEmail(ctx context.Context, email string) ([]*pb.Acco
 	return res, nil
 }
 func (r *accountsRepo) Get(ctx context.Context, uid string) (*pb.AccountEntity, error) {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return nil, err
-	}
 	res := &pb.AccountEntity{}
 	key, err := getKey(uid)
 	if err != nil {
 		return nil, err
 	}
-	err = client.Get(ctx, key, res)
+	err = r.client.Get(ctx, key, res)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		if err.Error() == datastore.ErrNoSuchEntity.Error() {
@@ -133,15 +120,11 @@ func (r *accountsRepo) Get(ctx context.Context, uid string) (*pb.AccountEntity, 
 	return res, nil
 }
 func (r *accountsRepo) Delete(ctx context.Context, uid string) error {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return err
-	}
 	key, err := getKey(uid)
 	if err != nil {
 		return err
 	}
-	err = client.Delete(ctx, key)
+	err = r.client.Delete(ctx, key)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		if err.Error() == datastore.ErrNoSuchEntity.Error() {
@@ -154,14 +137,10 @@ func (r *accountsRepo) Delete(ctx context.Context, uid string) error {
 	return nil
 }
 func (r *accountsRepo) PutNew(ctx context.Context, entity *pb.AccountEntity) (string, error) {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return "", err
-	}
 	if entity == nil {
 		return "", pb.ErrNothingToProcess
 	}
-	k, err := client.Put(ctx, newKey(r.namespace), entity)
+	k, err := r.client.Put(ctx, newKey(r.namespace), entity)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		return "", errInternalServerError
@@ -170,10 +149,6 @@ func (r *accountsRepo) PutNew(ctx context.Context, entity *pb.AccountEntity) (st
 	return k.Encode(), nil
 }
 func (r *accountsRepo) Put(ctx context.Context, uid string, entity *pb.AccountEntity) error {
-	client, err := r.getClient(ctx)
-	if err != nil {
-		return err
-	}
 	if entity == nil {
 		return pb.ErrNothingToProcess
 	}
@@ -181,7 +156,7 @@ func (r *accountsRepo) Put(ctx context.Context, uid string, entity *pb.AccountEn
 	if err != nil {
 		return err
 	}
-	_, err = client.Put(ctx, k, entity)
+	_, err = r.client.Put(ctx, k, entity)
 	if err != nil {
 		log.Errorf("query failed: %v", err)
 		return errInternalServerError

@@ -11,6 +11,8 @@ import (
 	dt "cloud.google.com/go/datastore"
 	"github.com/go-zoo/bone"
 	"github.com/justinas/alice"
+	"github.com/throttled/throttled"
+	"github.com/throttled/throttled/store/memstore"
 
 	//"github.com/justinas/nosurf"
 	"github.com/klahssen/webapp/pkg/json/api"
@@ -20,8 +22,6 @@ import (
 	"github.com/klahssen/webapp/pkg/services/accounts"
 	emails "github.com/klahssen/webapp/pkg/services/emails/local"
 	"github.com/pkg/errors"
-	"github.com/throttled/throttled"
-	"github.com/throttled/throttled/store/memstore"
 )
 
 /*
@@ -55,12 +55,15 @@ func main() {
 		log.Fatalf("failed to get mux: %v", err)
 	}
 	//middlewares
+
 	store, err := memstore.New(1000)
 	if err != nil {
 		log.Fatal(err)
 	}
 	th := throttled.RateLimit(throttled.PerSec(10), &throttled.VaryBy{Path: true}, store)
 	chain := alice.New(th.Throttle, timeoutHandler, middlewares.Log, middlewares.TokenFromHeader) //nosurf.NewPure()
+
+	//chain := alice.New(timeoutHandler, middlewares.Log, middlewares.TokenFromHeader) //nosurf.NewPure()
 
 	server := http.Server{
 		Addr:              fmt.Sprintf(":%d", p),

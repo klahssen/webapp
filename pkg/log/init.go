@@ -23,9 +23,22 @@ type Logger interface {
 	Debug(args ...interface{})
 }
 
+func newZapConfig() zap.Config {
+	return zap.Config{
+		Level:             zap.NewAtomicLevelAt(zap.DebugLevel),
+		Development:       true,
+		Encoding:          "console",
+		EncoderConfig:     zap.NewDevelopmentEncoderConfig(),
+		OutputPaths:       []string{"stderr"},
+		ErrorOutputPaths:  []string{"stderr"},
+		DisableStacktrace: true,
+	}
+}
+
 func init() {
 	//l := zap.NewExample(zap.Development())
-	l, _ := zap.NewDevelopment() //NewProduction
+	//l, _ := zap.NewDevelopment()
+	l, _ := newZapConfig().Build()
 	logger = l.Sugar()
 }
 
