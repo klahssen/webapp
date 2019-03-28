@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/klahssen/webapp/pkg/log"
 )
 
 //WriteResponse write a formated json response
@@ -19,12 +20,13 @@ func WriteResponse(w http.ResponseWriter, code int, err error, data interface{},
 	if err != nil {
 		resp.Err = err.Error()
 	}
-	b, err := json.Marshal(resp)
+	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
-		w.Write([]byte(spew.Sdump(resp)))
-		return
+		log.Infof("failed to json encode response: %v", err)
+		if _, err = w.Write([]byte(spew.Sdump(resp))); err != nil {
+			log.Infof("failed to write dump of response: %v", err)
+		}
 	}
-	w.Write(b)
 }
 
 //Response for json request
