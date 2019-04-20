@@ -6,8 +6,8 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-zoo/bone v0.0.0-20190117145001-d7ce1372afa7
 	github.com/gogo/protobuf v1.2.1
+	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/justinas/alice v0.0.0-20171023064455-03f45bd4b7da
-	github.com/justinas/nosurf v0.0.0-20190118163749-6453469bdcc9 // indirect
 	github.com/klahssen/tester v1.0.2
 	github.com/pkg/errors v0.8.0
 	github.com/throttled/throttled v2.2.4+incompatible
@@ -16,5 +16,6 @@ require (
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576
 	google.golang.org/grpc v1.19.1
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )

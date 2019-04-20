@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/klahssen/webapp/pkg/log"
+	"github.com/klahssen/webapp/internal/log"
 )
 
 type permsClaims struct {

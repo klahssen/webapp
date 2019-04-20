@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/klahssen/webapp/pkg/internal/errors"
+	"github.com/klahssen/webapp/internal/errors"
 	"google.golang.org/grpc/codes"
 	//"google.golang.org/grpc/codes"
 	//"google.golang.org/grpc/status"

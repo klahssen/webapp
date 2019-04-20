@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	contx "github.com/klahssen/webapp/pkg/context"
-	"github.com/klahssen/webapp/pkg/internal/errors"
-	"github.com/klahssen/webapp/pkg/json/format"
+	contx "github.com/klahssen/webapp/internal/context"
+	"github.com/klahssen/webapp/internal/errors"
+	"github.com/klahssen/webapp/pkg/serve/json/format"
 )
 
 var (

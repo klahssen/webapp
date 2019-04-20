@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	pb "github.com/klahssen/webapp/pkg/domain"
-	handlers "github.com/klahssen/webapp/pkg/json/handlers"
+	handlers "github.com/klahssen/webapp/pkg/serve/json/handlers"
 	//"github.com/klahssen/webapp/pkg/log"
 )
 

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	contx "github.com/klahssen/webapp/pkg/context"
-	"github.com/klahssen/webapp/pkg/log"
+	contx "github.com/klahssen/webapp/internal/context"
+	"github.com/klahssen/webapp/internal/log"
 )
 
 //Log middleware logs new requests and how long they take

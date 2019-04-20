@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	contx "github.com/klahssen/webapp/pkg/context"
-	"github.com/klahssen/webapp/pkg/json/format"
+	contx "github.com/klahssen/webapp/internal/context"
+	"github.com/klahssen/webapp/pkg/serve/json/format"
 )
 
-type ctxKey string
+//type ctxKey string
 
 //TokenFromHeader checks if Authorization header is set
 func TokenFromHeader(next http.Handler) http.Handler {

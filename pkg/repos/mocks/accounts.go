@@ -58,7 +58,7 @@ func (r *accountsRepo) Get(ctx context.Context, uid string) (*pb.AccountEntity, 
 	if e, ok := r.data[uid]; ok {
 		return e, nil
 	}
-	return nil, &pb.ErrNotFound
+	return nil, pb.ErrNotFound
 }
 func (r *accountsRepo) Delete(ctx context.Context, uid string) error {
 	delete(r.data, uid)
@@ -66,7 +66,7 @@ func (r *accountsRepo) Delete(ctx context.Context, uid string) error {
 }
 func (r *accountsRepo) PutNew(ctx context.Context, entity *pb.AccountEntity) (string, error) {
 	if entity == nil {
-		return "", &pb.ErrNothingToProcess
+		return "", pb.ErrNothingToProcess
 	}
 	key := r.newKey()
 	r.data[key] = entity
@@ -74,7 +74,7 @@ func (r *accountsRepo) PutNew(ctx context.Context, entity *pb.AccountEntity) (st
 }
 func (r *accountsRepo) Put(ctx context.Context, uid string, entity *pb.AccountEntity) error {
 	if entity == nil {
-		return &pb.ErrNothingToProcess
+		return pb.ErrNothingToProcess
 	}
 	r.data[uid] = entity
 	return nil

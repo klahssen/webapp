@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-zoo/bone"
 	pb "github.com/klahssen/webapp/pkg/domain"
-	"github.com/klahssen/webapp/pkg/json/format"
+	"github.com/klahssen/webapp/pkg/serve/json/format"
 )
 
 //Accounts holds all handlers related to accounts manipulation

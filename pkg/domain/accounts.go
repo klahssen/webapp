@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/klahssen/webapp/pkg/internal/validators"
-	"github.com/klahssen/webapp/pkg/log"
+	"github.com/klahssen/webapp/internal/log"
+	"github.com/klahssen/webapp/internal/validators"
 	"golang.org/x/crypto/bcrypt"
 )
 

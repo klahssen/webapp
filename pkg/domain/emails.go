@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/klahssen/webapp/pkg/internal/validators"
+	"github.com/klahssen/webapp/internal/validators"
 )
 
 //EmailConfirmationParams data

@@ -15,12 +15,12 @@ import (
 	"github.com/throttled/throttled/store/memstore"
 
 	//"github.com/justinas/nosurf"
-	"github.com/klahssen/webapp/pkg/json/api"
-	"github.com/klahssen/webapp/pkg/json/middlewares"
-	"github.com/klahssen/webapp/pkg/log"
+	"github.com/klahssen/webapp/internal/log"
 	"github.com/klahssen/webapp/pkg/repos/gcloud/datastore"
+	"github.com/klahssen/webapp/pkg/serve/json/api"
+	"github.com/klahssen/webapp/pkg/serve/json/middlewares"
 	"github.com/klahssen/webapp/pkg/services/accounts"
-	emails "github.com/klahssen/webapp/pkg/services/emails/local"
+	emails "github.com/klahssen/webapp/pkg/services/emails/local" 
 	"github.com/pkg/errors"
 )
 
@@ -60,7 +60,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	th := throttled.RateLimit(throttled.PerSec(10), &throttled.VaryBy{Path: true}, store)
+	th := throttled.RateLimit(throttled.PerSec(5000), &throttled.VaryBy{Path: true}, store)
 	chain := alice.New(th.Throttle, timeoutHandler, middlewares.Log, middlewares.TokenFromHeader) //nosurf.NewPure()
 
 	//chain := alice.New(timeoutHandler, middlewares.Log, middlewares.TokenFromHeader) //nosurf.NewPure()

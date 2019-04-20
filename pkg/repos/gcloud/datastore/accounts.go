@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/klahssen/webapp/pkg/internal/errors"
+	"github.com/klahssen/webapp/internal/errors"
 
 	"cloud.google.com/go/datastore"
 	pb "github.com/klahssen/webapp/pkg/domain"
-	"github.com/klahssen/webapp/pkg/log"
+	"github.com/klahssen/webapp/internal/log"
 	"github.com/klahssen/webapp/pkg/repos"
 	"google.golang.org/grpc/codes"
 )

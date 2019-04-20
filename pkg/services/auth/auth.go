@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dgrijalva/jwt-go"
-	pb "github.com/klahssen/webapp/domain"
+	pb "github.com/klahssen/webapp/pkg/domain"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
